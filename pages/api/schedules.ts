@@ -1,13 +1,25 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-type Data = {
-  name: string;
-};
+const DB_URL_BASE = "http://localhost:3001";
+const DB_URL_SCHEDULES = DB_URL_BASE + "/schedules";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: "John Doe" });
+  const schedules = await getAllSchedules();
+  res.status(200).json(schedules);
+}
+
+async function getAllSchedules() {
+  const result = await (
+    await fetch(DB_URL_SCHEDULES, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  ).json();
+
+  return result;
 }
