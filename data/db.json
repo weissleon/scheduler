@@ -2,6 +2,7 @@
   "schedules": [
     {
       "id": "0001",
+      "status": "pending",
       "creator": "Denis Cho",
       "participants": ["Denis Cho", "Esther Kim"],
       "ts": 1629791630413,
