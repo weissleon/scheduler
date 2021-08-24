@@ -1,0 +1,12 @@
+{
+  "schedules": [
+    {
+      "id": "0001",
+      "creator": "Denis Cho",
+      "participants": ["Denis Cho", "Esther Kim"],
+      "ts": 1629791630413,
+      "title": "가산 아울렛 가기",
+      "detail": "가산 아울렛 데이트 가서 폴로 티 맞추기"
+    }
+  ]
+}
