@@ -43,6 +43,7 @@ async function getAllSchedules() {
   }
 }
 
+// TODO Implementation not complete
 async function createSchedule() {
   const isDBConnected = await isDatabaseOnline();
 
