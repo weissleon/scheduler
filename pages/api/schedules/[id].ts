@@ -16,23 +16,23 @@ export default async function handler(
   const ack = await isDatabaseOnline();
   if (!ack) return res.status(404).json({ message: MSG_DB_ERR });
 
+  let result = null;
   switch (req.method) {
     case METHOD_GET:
-      const schedules = await getSchedule(req.query.id as string);
-      res.status(200).json(schedules);
+      result = await getSchedule(req.query.id as string);
       break;
     case METHOD_PATCH:
-      const result = await updateSchedule(req.query.id as string);
-      res.status(200).json(result);
+      result = await updateSchedule(req.query.id as string);
       break;
     case METHOD_DELETE:
-      const response = await deleteSchedule(req.query.id as string);
-      res.status(200).json(response);
+      result = await deleteSchedule(req.query.id as string);
       break;
     default:
       res.status(401).json({ message: MSG_REQ_TYPE_ERR });
-      break;
+      return;
   }
+
+  res.status(200).json(result);
 }
 
 async function getSchedule(id: string) {
@@ -40,7 +40,7 @@ async function getSchedule(id: string) {
 
   if (isDBConnected) {
     const result = await (
-      await fetch(DB_URL_SCHEDULES, {
+      await fetch(DB_URL_SCHEDULES + `/${id}`, {
         headers: {
           "Content-Type": "application/json",
         },
