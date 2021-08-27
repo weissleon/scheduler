@@ -1,16 +1,30 @@
 {
   "schedules": [
     {
-      "id": "0001",
-      "status": "pending",
+      "id": "1629791630413",
+      "status": 1,
       "creator": "Denis Cho",
-      "participants": [
-        "Denis Cho",
-        "Esther Kim"
-      ],
+      "participants": ["Denis Cho", "Esther Kim"],
+      "time": {
+        "start": 1629791631413,
+        "end": 1629791631913
+      },
       "ts": 1629791630413,
       "title": "가산 아울렛 가기",
       "detail": "가산 아울렛 데이트 가서 폴로 티 맞추기"
+    },
+    {
+      "creator": "Grace Yeon",
+      "id": "1629964507791",
+      "time": {
+        "start": 1629964517791,
+        "end": 1629964522791
+      },
+      "title": "슬기로운 의사생활 보기",
+      "detail": "집에서 옹기종기 모여 슬의 보기",
+      "participants": ["Grace Yeon", "Denis Cho", "Dana Cho"],
+      "status": 1,
+      "ts": 1629964507791
     }
   ]
 }
