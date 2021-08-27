@@ -1,9 +1,11 @@
 import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
 import { METHOD_POST, fetchJson, METHOD_GET } from "@util/NetworkUtil";
+import { Schedule, ScheduleStatus } from "@util/ScheduleManager";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 const DB_URL_SCHEDULES = DB_BASE_URL + "/schedules";
-const MSG_DB_ERROR = "DB offline.";
+const MSG_DB_ERR = "DB offline.";
+const MSG_REQ_TYPE_ERR = "Invalid Request Type";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,23 +13,23 @@ export default async function handler(
 ) {
   // Check if the database is online.
   const ack = await isDatabaseOnline();
-  if (!ack) return res.status(404).json({ message: MSG_DB_ERROR });
+  if (!ack) return res.status(404).json({ message: MSG_DB_ERR });
 
+  let result = null;
   switch (req.method) {
     case METHOD_GET:
-      const schedules = await getAllSchedules();
-      res.status(200).json(schedules);
+      result = await getAllSchedules();
       break;
     case METHOD_POST:
-      const result = await createSchedule();
-      res.status(200).json(result);
+      result = await createSchedule();
       break;
     default:
-      break;
+      return res.status(400).json({ message: MSG_REQ_TYPE_ERR });
   }
+  return res.status(200).json(result);
 }
 
-async function getAllSchedules() {
+async function getAllSchedules(): Promise<Schedule[] | null> {
   const isDBConnected = await isDatabaseOnline();
 
   if (isDBConnected) {
@@ -48,9 +50,18 @@ async function createSchedule() {
   const isDBConnected = await isDatabaseOnline();
 
   //   !!! DUMMY PAYLOAD !!!
-  const payload = {
+  const payload: Schedule = {
     creator: "Grace Yeon",
     id: Date.now().toString(),
+    time: {
+      start: Date.now().valueOf() + 10000,
+      end: Date.now().valueOf() + 15000,
+    },
+    title: "슬기로운 의사생활 보기",
+    detail: "집에서 옹기종기 모여 슬의 보기",
+    participants: ["Grace Yeon", "Denis Cho", "Dana Cho"],
+    status: ScheduleStatus.PENDING,
+    ts: Date.now().valueOf(),
   };
 
   if (isDBConnected) {
