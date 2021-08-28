@@ -22,7 +22,7 @@ export default async function handler(
       result = await getSchedule(req.query.id as string);
       break;
     case METHOD_PATCH:
-      result = await updateSchedule(req.query.id as string);
+      result = await updateSchedule(req.query.id as string, req.body);
       break;
     case METHOD_DELETE:
       result = await deleteSchedule(req.query.id as string);
@@ -53,18 +53,13 @@ async function getSchedule(id: string) {
   }
 }
 
-async function updateSchedule(id: string) {
-  // !! DUMMY DATA !!
-  const payload = {
-    creator: "Denis Cho",
-  };
-
+async function updateSchedule(id: string, change: any) {
   const result = await fetch(DB_URL_SCHEDULES + `/${id}`, {
     method: METHOD_PATCH,
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(change),
   });
 
   return result.body;

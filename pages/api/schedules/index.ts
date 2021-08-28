@@ -1,8 +1,10 @@
+// * IMPORTS
 import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
 import { METHOD_POST, fetchJson, METHOD_GET } from "@util/NetworkUtil";
 import { Schedule, ScheduleStatus } from "@util/ScheduleManager";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+// * VARIABLES
 const DB_URL_SCHEDULES = DB_BASE_URL + "/schedules";
 const MSG_DB_ERR = "DB offline.";
 const MSG_REQ_TYPE_ERR = "Invalid Request Type";
@@ -21,7 +23,21 @@ export default async function handler(
       result = await getAllSchedules();
       break;
     case METHOD_POST:
-      result = await createSchedule();
+      // !! DUMMY DATA !!
+      const schedule: Schedule = {
+        creator: "Grace Yeon",
+        id: Date.now().toString(),
+        time: {
+          start: Date.now().valueOf() + 10000,
+          end: Date.now().valueOf() + 15000,
+        },
+        title: "슬기로운 의사생활 보기",
+        detail: "집에서 옹기종기 모여 슬의 보기",
+        participants: ["Grace Yeon", "Denis Cho", "Dana Cho"],
+        status: ScheduleStatus.PENDING,
+        ts: Date.now().valueOf(),
+      };
+      result = await createSchedule(schedule);
       break;
     default:
       return res.status(400).json({ message: MSG_REQ_TYPE_ERR });
@@ -46,23 +62,8 @@ async function getAllSchedules(): Promise<Schedule[] | null> {
 }
 
 // TODO Implementation not complete
-async function createSchedule() {
+async function createSchedule(schedule: Schedule) {
   const isDBConnected = await isDatabaseOnline();
-
-  //   !!! DUMMY PAYLOAD !!!
-  const payload: Schedule = {
-    creator: "Grace Yeon",
-    id: Date.now().toString(),
-    time: {
-      start: Date.now().valueOf() + 10000,
-      end: Date.now().valueOf() + 15000,
-    },
-    title: "슬기로운 의사생활 보기",
-    detail: "집에서 옹기종기 모여 슬의 보기",
-    participants: ["Grace Yeon", "Denis Cho", "Dana Cho"],
-    status: ScheduleStatus.PENDING,
-    ts: Date.now().valueOf(),
-  };
 
   if (isDBConnected) {
     const result = await fetch(DB_URL_SCHEDULES, {
@@ -70,7 +71,7 @@ async function createSchedule() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(schedule),
     });
     return result.body;
   }

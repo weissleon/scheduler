@@ -1,9 +1,9 @@
-import { getSchedules } from "@util/ScheduleManager";
+import { getSchedules, Schedule } from "@util/ScheduleManager";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
-  const [schedules, setSchedules] = useState([]);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
   useEffect(() => {
     (async () => {
       setSchedules(await getSchedules());
