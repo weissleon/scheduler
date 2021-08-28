@@ -4,7 +4,10 @@
       "id": "1629791630413",
       "status": 1,
       "creator": "Denis Cho",
-      "participants": ["Denis Cho", "Esther Kim"],
+      "participants": [
+        "Denis Cho",
+        "Esther Kim"
+      ],
       "time": {
         "start": 1629791631413,
         "end": 1629791631913
@@ -22,9 +25,30 @@
       },
       "title": "슬기로운 의사생활 보기",
       "detail": "집에서 옹기종기 모여 슬의 보기",
-      "participants": ["Grace Yeon", "Denis Cho", "Dana Cho"],
+      "participants": [
+        "Grace Yeon",
+        "Denis Cho",
+        "Dana Cho"
+      ],
       "status": 1,
       "ts": 1629964507791
+    },
+    {
+      "creator": "Denis Cho",
+      "id": "1630076805017",
+      "time": {
+        "start": 1630076815017,
+        "end": 1630076820017
+      },
+      "title": "슬기로운 의사생활 보기",
+      "detail": "집에서 옹기종기 모여 슬의 보기",
+      "participants": [
+        "Grace Yeon",
+        "Denis Cho",
+        "Dana Cho"
+      ],
+      "status": 1,
+      "ts": 1630076805017
     }
   ]
 }
