@@ -1,13 +1,26 @@
 {
+  "users": [
+    {
+      "id": "9277e116a06d6938dc6f3fe6",
+      "name": "Dana Cho",
+      "email": "chodana@naver.com",
+      "password": "1234",
+      "ts": 1630249934748
+    },
+    {
+      "id": "927979e3a06d6938dc6f3fea",
+      "name": "Denis Cho",
+      "email": "chodenis1103@gmail.com",
+      "password": "1234",
+      "ts": 1630250039400
+    }
+  ],
   "schedules": [
     {
       "id": "1629791630413",
       "status": 1,
       "creator": "Denis Cho",
-      "participants": [
-        "Denis Cho",
-        "Esther Kim"
-      ],
+      "participants": ["Denis Cho", "Esther Kim"],
       "time": {
         "start": 1629791631413,
         "end": 1629791631913
@@ -25,11 +38,7 @@
       },
       "title": "슬기로운 의사생활 보기",
       "detail": "집에서 옹기종기 모여 슬의 보기",
-      "participants": [
-        "Grace Yeon",
-        "Denis Cho",
-        "Dana Cho"
-      ],
+      "participants": ["Grace Yeon", "Denis Cho", "Dana Cho"],
       "status": 1,
       "ts": 1629964507791
     },
@@ -42,11 +51,7 @@
       },
       "title": "슬기로운 의사생활 보기",
       "detail": "집에서 옹기종기 모여 슬의 보기",
-      "participants": [
-        "Grace Yeon",
-        "Denis Cho",
-        "Dana Cho"
-      ],
+      "participants": ["Grace Yeon", "Denis Cho", "Dana Cho"],
       "status": 1,
       "ts": 1630076805017
     }
