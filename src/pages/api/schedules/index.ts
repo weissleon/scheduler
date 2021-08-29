@@ -2,6 +2,7 @@
 import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
 import { METHOD_POST, fetchJson, METHOD_GET } from "@util/NetworkUtil";
 import { Schedule, ScheduleStatus } from "@util/ScheduleManager";
+import ObjectID from "bson-objectid";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 // * VARIABLES
@@ -26,7 +27,7 @@ export default async function handler(
       // !! DUMMY DATA !!
       const schedule: Schedule = {
         creator: "Grace Yeon",
-        id: Date.now().toString(),
+        id: new ObjectID(Date.now()).id,
         time: {
           start: Date.now().valueOf() + 10000,
           end: Date.now().valueOf() + 15000,
@@ -37,7 +38,7 @@ export default async function handler(
         status: ScheduleStatus.PENDING,
         ts: Date.now().valueOf(),
       };
-      result = await createSchedule(schedule);
+      result = await postSchedule(schedule);
       break;
     default:
       return res.status(400).json({ message: MSG_REQ_TYPE_ERR });
@@ -62,8 +63,11 @@ async function getAllSchedules(): Promise<Schedule[] | null> {
 }
 
 // TODO Implementation not complete
-async function createSchedule(newSchedule: Schedule) {
+async function postSchedule(newSchedule: Schedule) {
   const isDBConnected = await isDatabaseOnline();
+
+  // Initialize likes property
+  newSchedule["likes"] = [];
 
   if (isDBConnected) {
     const result = await fetch(DB_URL_SCHEDULES, {

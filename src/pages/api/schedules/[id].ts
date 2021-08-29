@@ -1,5 +1,10 @@
 import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
-import { METHOD_DELETE, METHOD_GET, METHOD_PATCH } from "@util/NetworkUtil";
+import {
+  METHOD_DELETE,
+  METHOD_GET,
+  METHOD_PATCH,
+  METHOD_POST,
+} from "@util/NetworkUtil";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 // ! This is still being implemented, and thus highly discouraged.
@@ -22,11 +27,12 @@ export default async function handler(
       result = await getSchedule(req.query.id as string);
       break;
     case METHOD_PATCH:
-      result = await updateSchedule(req.query.id as string, req.body);
+      result = await patchSchedule(req.query.id as string, req.body);
       break;
     case METHOD_DELETE:
       result = await deleteSchedule(req.query.id as string);
       break;
+    case METHOD_POST:
     default:
       res.status(401).json({ message: MSG_REQ_TYPE_ERR });
       return;
@@ -53,7 +59,7 @@ async function getSchedule(id: string) {
   }
 }
 
-async function updateSchedule(id: string, change: any) {
+async function patchSchedule(id: string, change: any) {
   const result = await fetch(DB_URL_SCHEDULES + `/${id}`, {
     method: METHOD_PATCH,
     headers: {

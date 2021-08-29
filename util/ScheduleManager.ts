@@ -12,6 +12,7 @@ export type Schedule = {
   status: ScheduleStatus;
   creator: string;
   participants: string[];
+  likes?: string[];
   time: {
     start: number;
     end: number;

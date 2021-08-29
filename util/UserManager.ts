@@ -1,4 +1,4 @@
-import { METHOD_POST } from "./NetworkUtil";
+import { METHOD_PATCH, METHOD_POST } from "./NetworkUtil";
 
 // TODO: createUser function must be implemented!
 export type UserPriv = UserPub & { email: string };
@@ -6,6 +6,7 @@ export type UserPriv = UserPub & { email: string };
 export type UserPub = {
   id: string;
   name: string;
+  schedules: { id: string; privacyLv: number; filter: string[] }[];
 };
 
 const API_URL_BASE = "/api/users";
@@ -28,6 +29,17 @@ export async function createUser({ name, email, password }: UserRegType) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+  });
+  return result;
+}
+
+export async function updateUser(id: string, change: any) {
+  const result = await fetch(API_URL_BASE, {
+    method: METHOD_PATCH,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(change),
   });
   return result;
 }
