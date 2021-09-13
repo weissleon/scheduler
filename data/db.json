@@ -2,20 +2,33 @@
   "users": [
     {
       "id": "927979e3a06d6938dc6f3fea",
-      "name": "Dana Cho",
+      "name": "Denis Cho",
       "email": "chodenis1103@gmail.com",
       "password": "1234",
       "ts": 1630274797109
+    },
+    {
+      "id": "9c94e9a4ff03cb1a642b6867",
+      "name": "Esther Kim",
+      "email": "tpwns430@gmail.com",
+      "password": "1234",
+      "ts": 1630419609642
     }
   ],
   "schedules": [
     {
       "id": "1629791630413",
-      "status": 1,
-      "creator": "Denis Cho",
+      "status": 2,
+      "creatorId": "927979e3a06d6938dc6f3fea",
       "participants": [
-        "Denis Cho",
-        "Esther Kim"
+        {
+          "id": "927979e3a06d6938dc6f3fea",
+          "status": 2
+        },
+        {
+          "id": "9c94e9a4ff03cb1a642b6867",
+          "status": 2
+        }
       ],
       "time": {
         "start": 1629791631413,
@@ -24,40 +37,6 @@
       "ts": 1629791630413,
       "title": "가산 아울렛 가기",
       "detail": "가산 아울렛 데이트 가서 폴로 티 맞추기"
-    },
-    {
-      "creator": "Grace Yeon",
-      "id": "1629964507791",
-      "time": {
-        "start": 1629964517791,
-        "end": 1629964522791
-      },
-      "title": "슬기로운 의사생활 보기",
-      "detail": "집에서 옹기종기 모여 슬의 보기",
-      "participants": [
-        "Grace Yeon",
-        "Denis Cho",
-        "Dana Cho"
-      ],
-      "status": 1,
-      "ts": 1629964507791
-    },
-    {
-      "creator": "Denis Cho",
-      "id": "1630076805017",
-      "time": {
-        "start": 1630076815017,
-        "end": 1630076820017
-      },
-      "title": "슬기로운 의사생활 보기",
-      "detail": "집에서 옹기종기 모여 슬의 보기",
-      "participants": [
-        "Grace Yeon",
-        "Denis Cho",
-        "Dana Cho"
-      ],
-      "status": 1,
-      "ts": 1630076805017
     }
   ]
 }

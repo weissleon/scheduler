@@ -1,25 +1,36 @@
+import { login } from "@util/app/LoginManager";
 import { NextPage } from "next";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useContext, useEffect } from "react";
+import { AccessTokenContext, AccessTokenContextType } from "./_app";
+import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
+  // * Router
+  const router = useRouter();
+
+  // * Context
+  const { accessToken, setAccessToken } =
+    useContext<AccessTokenContextType>(AccessTokenContext);
+
+  // * States
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isSuccessful, setIsSuccessful] = useState<boolean | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const data = new FormData(
-      document.querySelector("form") as HTMLFormElement
-    );
-    let payload: any = {};
-    data.forEach((value, key) => (payload[key] = value));
-    fetch("/api/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }).then((res) => console.log(res));
+    const token = await login({ email, password });
+    if (token) {
+      setAccessToken(token);
+      router.replace("/");
+    } else {
+      setIsSuccessful((prev) => false);
+    }
   };
+
+  useEffect(() => {
+    if (accessToken) router.replace("/");
+  }, []);
 
   return (
     <div className="grid min-h-screen place-items-center">

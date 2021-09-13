@@ -1,7 +1,7 @@
 // * IMPORTS
-import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
-import { METHOD_POST, fetchJson, METHOD_GET } from "@util/NetworkUtil";
-import { Schedule, ScheduleStatus } from "@util/ScheduleManager";
+import { DB_BASE_URL, isDatabaseOnline } from "@util/api/DatabaseManager";
+import { METHOD_POST, fetchJson, METHOD_GET } from "@util/api/NetworkUtil";
+import { Schedule, ScheduleStatus } from "@util/app/ScheduleManager";
 import ObjectID from "bson-objectid";
 import type { NextApiRequest, NextApiResponse } from "next";
 

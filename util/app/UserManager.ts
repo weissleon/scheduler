@@ -1,4 +1,10 @@
-import { METHOD_PATCH, METHOD_POST } from "./NetworkUtil";
+import {
+  fetchJson,
+  METHOD_GET,
+  METHOD_PATCH,
+  METHOD_POST,
+} from "../api/NetworkUtil";
+import jwt from "jsonwebtoken";
 
 // TODO: createUser function must be implemented!
 export type UserPriv = UserPub & { email: string };
@@ -42,4 +48,18 @@ export async function updateUser(id: string, change: any) {
     body: JSON.stringify(change),
   });
   return result;
+}
+
+export async function getUserNameById(id: string) {
+  const res = (await fetchJson(API_URL_BASE + `/${id}`, {
+    method: METHOD_GET,
+  })) as UserPriv;
+  return res.name;
+}
+
+export function getUserIdFromToken(token: string) {
+  if (!token) return null;
+  const { id } = jwt.decode(token) as { id: string };
+
+  return id;
 }

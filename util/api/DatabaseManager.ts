@@ -1,4 +1,4 @@
-import { METHOD_GET } from "@util/NetworkUtil";
+import { METHOD_GET } from "@util/api/NetworkUtil";
 
 // Variables
 export const DB_BASE_URL = "http://localhost:3001";

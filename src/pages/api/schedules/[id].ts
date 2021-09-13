@@ -1,10 +1,10 @@
-import { DB_BASE_URL, isDatabaseOnline } from "@util/DatabaseManager";
+import { DB_BASE_URL, isDatabaseOnline } from "@util/api/DatabaseManager";
 import {
   METHOD_DELETE,
   METHOD_GET,
   METHOD_PATCH,
   METHOD_POST,
-} from "@util/NetworkUtil";
+} from "@util/api/NetworkUtil";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 // ! This is still being implemented, and thus highly discouraged.
