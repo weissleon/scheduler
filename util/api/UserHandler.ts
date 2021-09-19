@@ -6,7 +6,7 @@ import {
 } from "@util/api/NetworkUtil";
 import { UserPriv } from "@util/app/UserManager";
 import mongoose from "mongoose";
-import { DB_BASE_URL, isDatabaseOnline } from "./DatabaseManager";
+import { DB_BASE_URL, checkDbConnection } from "./DatabaseManager";
 
 // * VARIABLES
 const DB_URL_USERS = DB_BASE_URL + "/users";
@@ -17,7 +17,7 @@ export async function createUser(newUser: any) {
 }
 
 export async function getAllUsers(): Promise<UserPriv[] | null> {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   if (isDBConnected) {
     const response = await fetchJson(DB_URL_USERS, {
@@ -33,7 +33,7 @@ export async function getAllUsers(): Promise<UserPriv[] | null> {
 }
 
 export async function getUser(id: string): Promise<UserPriv[] | null> {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   if (isDBConnected) {
     const response = await fetchJson(DB_URL_USERS + `/${id}`, {
@@ -49,7 +49,7 @@ export async function getUser(id: string): Promise<UserPriv[] | null> {
 }
 
 export async function patchUser(id: string, change: any) {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   //   Update ts.
   change["ts"] = Date.now();
@@ -67,7 +67,7 @@ export async function patchUser(id: string, change: any) {
 }
 
 export async function deleteUser(id: string) {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   if (isDBConnected) {
     const result = await fetchJson(DB_URL_USERS + `/${id}`, {

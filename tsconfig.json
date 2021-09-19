@@ -14,7 +14,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "baseUrl": "./",
-    "paths": { "@util/*": ["util/*"] }
+    "paths": {
+      "@util/*": ["util/*"],
+      "@models/*": ["models/*"],
+      "@gql/*": ["gql/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "app/app.js"],
   "exclude": ["node_modules"]

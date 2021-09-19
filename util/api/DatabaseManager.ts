@@ -1,24 +1,14 @@
-import { METHOD_GET } from "@util/api/NetworkUtil";
-
+import mongoose from "mongoose";
 // Variables
-export const DB_BASE_URL = "http://localhost:3001";
 
 // This function connects to the database and returns the db object if connected.
 // returns null if failed.
 // !! TEMPORARY IMPLEMENTATION !!
 export async function connectToDatabase() {
-  let ack = await isDatabaseOnline();
-  let db = null; // ! This will be implemented in the future.
-  return { ack, db };
+  const conn = await mongoose.connect(process.env.DB_MONGODB_URL as string);
+  return conn;
 }
 
-export async function isDatabaseOnline() {
-  let ack;
-  try {
-    let response = await fetch(DB_BASE_URL, { method: METHOD_GET });
-    ack = true;
-  } catch (error) {
-    ack = false;
-  }
-  return ack;
+export async function checkDbConnection() {
+  return mongoose.connection.readyState == 2;
 }

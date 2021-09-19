@@ -1,4 +1,4 @@
-import { DB_BASE_URL, isDatabaseOnline } from "@util/api/DatabaseManager";
+import { DB_BASE_URL, checkDbConnection } from "@util/api/DatabaseManager";
 import {
   METHOD_DELETE,
   METHOD_GET,
@@ -18,7 +18,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Check if the database is online.
-  const ack = await isDatabaseOnline();
+  const ack = await checkDbConnection();
   if (!ack) return res.status(404).json({ message: MSG_DB_ERR });
 
   let result = null;
@@ -42,7 +42,7 @@ export default async function handler(
 }
 
 async function getSchedule(id: string) {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   if (isDBConnected) {
     const result = await (

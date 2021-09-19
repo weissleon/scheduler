@@ -1,18 +1,8 @@
 import { NextApiResponse, NextApiRequest } from "next";
-import { ApolloServer, gql } from "apollo-server-micro";
-const typeDefs = gql`
-  type Query {
-    name: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    name: (parent: any, args: any, context: any) => {
-      return "Denis Cho";
-    },
-  },
-};
+import { ApolloServer } from "apollo-server-micro";
+import { resolvers } from "@gql/Resolvers";
+import { typeDefs } from "@gql/TypeDefs";
+import { connectToDatabase } from "@util/api/DatabaseManager";
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -31,13 +21,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
 
-  // 이게 무슨 역할인지는 모르겠지만, 그냥 개 중요하다는 것만 알아두자.
-  // CORS preflight Request 가 OPTIONS METHOD라는데, 알아봐야 한다.
+  // CORS Preflight Handling
   if (req.method === "OPTIONS") {
     res.end();
     return false;
   }
 
+  await connectToDatabase();
   // 이게 도대체 await apolloServer.start()과 무슨 차이가 있길래 이걸로 해야만 성공하는 것일까
   await startServer;
   await apolloServer.createHandler({ path: "/api/graphql" })(req, res);

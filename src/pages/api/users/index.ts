@@ -1,6 +1,6 @@
 // * IMPORTS
 import { getAllUsers, createUser } from "@util/api/UserHandler";
-import { isDatabaseOnline } from "@util/api/DatabaseManager";
+import { checkDbConnection } from "@util/api/DatabaseManager";
 import { METHOD_GET, METHOD_POST } from "@util/api/NetworkUtil";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,7 +13,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Check if the database is online.
-  const ack = await isDatabaseOnline();
+  const ack = await checkDbConnection();
   if (!ack) return res.status(404).json({ message: MSG_DB_ERR });
 
   let result = null;

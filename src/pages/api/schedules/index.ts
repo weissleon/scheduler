@@ -1,5 +1,5 @@
 // * IMPORTS
-import { DB_BASE_URL, isDatabaseOnline } from "@util/api/DatabaseManager";
+import { DB_BASE_URL, checkDbConnection } from "@util/api/DatabaseManager";
 import { METHOD_POST, fetchJson, METHOD_GET } from "@util/api/NetworkUtil";
 import { Schedule, ScheduleStatus } from "@util/app/ScheduleManager";
 import ObjectID from "bson-objectid";
@@ -15,7 +15,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   // Check if the database is online.
-  const ack = await isDatabaseOnline();
+  const ack = await checkDbConnection();
   if (!ack) return res.status(404).json({ message: MSG_DB_ERR });
 
   let result = null;
@@ -47,7 +47,7 @@ export default async function handler(
 }
 
 async function getAllSchedules(): Promise<Schedule[] | null> {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   if (isDBConnected) {
     const result = await fetchJson(DB_URL_SCHEDULES, {
@@ -64,7 +64,7 @@ async function getAllSchedules(): Promise<Schedule[] | null> {
 
 // TODO Implementation not complete
 async function postSchedule(newSchedule: Schedule) {
-  const isDBConnected = await isDatabaseOnline();
+  const isDBConnected = await checkDbConnection();
 
   // Initialize likes property
   newSchedule["likes"] = [];
