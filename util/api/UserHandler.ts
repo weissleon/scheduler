@@ -5,7 +5,7 @@ import {
   METHOD_DELETE,
 } from "@util/api/NetworkUtil";
 import { UserPriv } from "@util/app/UserManager";
-import ObjectID from "bson-objectid";
+import mongoose from "mongoose";
 import { DB_BASE_URL, isDatabaseOnline } from "./DatabaseManager";
 
 // * VARIABLES
@@ -13,24 +13,7 @@ const DB_URL_USERS = DB_BASE_URL + "/users";
 
 // TODO Implementation not complete
 export async function createUser(newUser: any) {
-  const isDBConnected = await isDatabaseOnline();
-
-  const payload = {
-    id: new ObjectID(Date.now()),
-    ...newUser,
-    ts: Date.now(),
-  };
-
-  if (isDBConnected) {
-    const result = await fetchJson(DB_URL_USERS, {
-      method: METHOD_POST,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    return result;
-  }
+  await mongoose.connect(process.env.DB_URL_MONGO as string);
 }
 
 export async function getAllUsers(): Promise<UserPriv[] | null> {
