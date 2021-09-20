@@ -1,15 +1,8 @@
-import React from "react";
+import { ScheduleInserter } from "@components/ScheduleInserter";
+import { NextPage } from "next";
 
-function AddSchedule() {
-  function addSchedule() {
-    console.log(`Add Schedule Clicked!`);
-  }
-
-  return (
-    <div>
-      <button onClick={() => addSchedule()}>Add Schedule</button>
-    </div>
-  );
-}
+const AddSchedule: NextPage = () => {
+  return <ScheduleInserter />;
+};
 
 export default AddSchedule;

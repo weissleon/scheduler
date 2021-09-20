@@ -7,13 +7,15 @@ import {
   useEffect,
   useState,
 } from "react";
-import App from "next/app";
 import { getLogInStatus } from "@util/app/AuthenticationManager";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export type AccessTokenContextType = {
   accessToken: string | null;
   setAccessToken: Dispatch<SetStateAction<string | null>>;
 };
+
+const queryClient = new QueryClient();
 
 export const AccessTokenContext = createContext<AccessTokenContextType>({
   accessToken: null,
@@ -34,19 +36,11 @@ function MyApp({ Component, pageProps, token }: AppProps & { token: string }) {
   }, []);
 
   return (
-    <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
-      {!isLoading && <Component {...pageProps} />}
-    </AccessTokenContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
+        {!isLoading && <Component {...pageProps} />}
+      </AccessTokenContext.Provider>
+    </QueryClientProvider>
   );
 }
 export default MyApp;
-
-// MyApp.getInitialProps = async (appContext: AppContext) => {
-//   // calls page's `getInitialProps` and fills `appProps.pageProps`
-//   const appProps = await App.getInitialProps(appContext);
-
-//   const token = await getLogInStatus();
-//   console.log(`Received token is: ${token}`);
-//   if (typeof document !== "undefined") console.log("Now on the client-side!");
-//   return { token: token, ...appProps };
-// };

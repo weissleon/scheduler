@@ -1,10 +1,50 @@
-import { Participant, Schedule } from "@models/schedule";
+import { Schedule } from "@models/schedule";
 import { User } from "@models/user";
 import { TimestampScalar } from "./Scalars";
+import mongoose from "mongoose";
 
 export const resolvers = {
   Timestamp: TimestampScalar,
-
+  User: {
+    schedules: async ({ _id }: { _id: string }, __: any, context: any) => {
+      const schedules = await Schedule.find({
+        participants: { $elemMatch: { userId: _id } },
+      });
+      return schedules;
+    },
+    friends: async (
+      { friendIds }: { friendIds: mongoose.ObjectId[] },
+      __: any,
+      context: any
+    ) => {
+      const friends = await User.find({ _id: { $in: friendIds } });
+      return friends;
+    },
+  },
+  Participant: {
+    user: async ({ userId }: { userId: string }, __: any, context: any) => {
+      const user = await User.findById(userId);
+      return user;
+    },
+    inviter: async (
+      { inviterId }: { inviterId: string },
+      __: any,
+      context: any
+    ) => {
+      const user = await User.findById(inviterId);
+      return user;
+    },
+  },
+  Schedule: {
+    creator: async (
+      { creatorId }: { creatorId: string },
+      __: any,
+      context: any
+    ) => {
+      const user = await User.findById(creatorId);
+      return user;
+    },
+  },
   Query: {
     users: async () => {
       const users = await User.find();

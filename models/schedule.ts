@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export type Schedule = {
-  _id: mongoose.Types.ObjectId;
+  _id: mongoose.ObjectId;
   creatorId: string;
   participants: Participant[];
   title: string;
@@ -14,7 +14,7 @@ export type Schedule = {
 
 export type Participant = {
   userId: string;
-  invitorId: string;
+  inviterId: string;
   permission: number;
   status: number;
 };
@@ -25,7 +25,7 @@ const ParticipantSchema = new mongoose.Schema<Participant>(
       type: String,
       required: true,
     },
-    invitorId: {
+    inviterId: {
       type: String,
       required: true,
     },

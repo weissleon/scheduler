@@ -17,7 +17,8 @@
     "paths": {
       "@util/*": ["util/*"],
       "@models/*": ["models/*"],
-      "@gql/*": ["gql/*"]
+      "@gql/*": ["gql/*"],
+      "@components/*": ["components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "app/app.js"],

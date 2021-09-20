@@ -8,18 +8,21 @@ export const typeDefs = gql`
     name: String!
     email: String!
     password: String!
+    schedules: [Schedule!]
+    friends: [User!]
   }
 
   type Participant {
-    userId: String!
-    invitorId: String!
+    # userId: String!
+    user: User!
+    inviter: User!
     permission: Int!
     status: Int!
   }
 
   type Schedule {
     _id: String!
-    creatorId: String!
+    creator: User!
     participants: [Participant]!
     title: String!
     detail: String!
@@ -46,7 +49,7 @@ export const typeDefs = gql`
 
   input ParticipantInput {
     userId: String
-    invitorId: String
+    inviterId: String
     permission: Int
     status: Int
   }

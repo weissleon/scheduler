@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 export type User = {
-  _id: mongoose.Types.ObjectId;
+  _id: mongoose.ObjectId;
   name: string;
   email: string;
   password: string;
+  friendIds: mongoose.ObjectId[];
   tsCreated?: number;
 };
 
@@ -19,6 +20,10 @@ const UserSchema = new mongoose.Schema<User>({
   },
   password: {
     type: String,
+    required: true,
+  },
+  friendIds: {
+    type: [mongoose.SchemaTypes.ObjectId],
     required: true,
   },
   tsCreated: {
