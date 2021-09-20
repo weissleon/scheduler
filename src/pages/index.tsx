@@ -1,29 +1,32 @@
 import { NextPage } from "next";
-import { useQuery } from "react-query";
-import { gql, request } from "graphql-request";
+import { Typography, AppBar, Toolbar, Button } from "@mui/material";
+import { useRouter } from "next/router";
+
 const Home: NextPage = () => {
-  const fetchUsers = async () => {
-    return await request(
-      "/api/graphql",
-      gql`
-        query {
-          users {
-            name
-            email
-            _id
-          }
-        }
-      `
-    );
-  };
+  // Create a router
+  const router = useRouter();
 
-  const { isLoading, isError, data, error } = useQuery("users", fetchUsers);
+  function goToSignUp() {
+    router.push("/sign_up");
+  }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Oops... Something went wrong</div>;
-
-  console.log(data);
-  return <div>Hello World</div>;
+  return (
+    <>
+      <AppBar position="relative">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Schedular
+          </Typography>
+          <Button variant="text" color="inherit">
+            <Typography variant="button">Sign In</Typography>
+          </Button>
+          <Button onClick={goToSignUp} variant="text" color="inherit">
+            <Typography variant="button">Sign Up</Typography>
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </>
+  );
 };
 
 export default Home;

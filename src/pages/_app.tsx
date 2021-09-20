@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppContext, AppProps } from "next/app";
+import Head from "next/head";
 import {
   createContext,
   Dispatch,
@@ -36,11 +37,19 @@ function MyApp({ Component, pageProps, token }: AppProps & { token: string }) {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
-        {!isLoading && <Component {...pageProps} />}
-      </AccessTokenContext.Provider>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
+          {!isLoading && <Component {...pageProps} />}
+        </AccessTokenContext.Provider>
+      </QueryClientProvider>
+    </>
   );
 }
 export default MyApp;
