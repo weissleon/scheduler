@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import type { AppContext, AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import Head from "next/head";
 import {
   createContext,
@@ -10,6 +10,7 @@ import {
 } from "react";
 import { getLogInStatus } from "@util/app/AuthenticationManager";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Appbar from "@components/Appbar";
 
 export type AccessTokenContextType = {
   accessToken: string | null;
@@ -23,7 +24,7 @@ export const AccessTokenContext = createContext<AccessTokenContextType>({
   setAccessToken: () => {},
 });
 
-function MyApp({ Component, pageProps, token }: AppProps & { token: string }) {
+function MyApp({ Component, pageProps }: AppProps) {
   // * States
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -46,7 +47,12 @@ function MyApp({ Component, pageProps, token }: AppProps & { token: string }) {
       </Head>
       <QueryClientProvider client={queryClient}>
         <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
-          {!isLoading && <Component {...pageProps} />}
+          {!isLoading && (
+            <>
+              <Appbar />
+              <Component {...pageProps} />
+            </>
+          )}
         </AccessTokenContext.Provider>
       </QueryClientProvider>
     </>

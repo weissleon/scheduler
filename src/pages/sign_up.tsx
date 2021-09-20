@@ -11,7 +11,10 @@ const SignUp: NextPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ display: "grid", height: "100vh" }}>
+    <Container
+      maxWidth="lg"
+      sx={{ display: "grid", height: "calc(100vh - 64px)" }}
+    >
       <Box py={2} justifySelf="center" alignSelf="center" position="relative">
         <SignUpBoard
           isProcessing={isProcessing}

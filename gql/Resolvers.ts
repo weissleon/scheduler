@@ -54,6 +54,14 @@ export const resolvers = {
       const user = await User.findById(id);
       return user;
     },
+    userExist: async (
+      parent: any,
+      { email }: { email: string },
+      context: any
+    ) => {
+      const user = await User.findOne({ email: email });
+      return user ? true : false;
+    },
     schedules: async () => {
       const schedules = await Schedule.find();
       return schedules;

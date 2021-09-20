@@ -57,6 +57,7 @@ export const typeDefs = gql`
   type Query {
     users: [User]
     user(id: String!): User
+    userExist(email: String!): Boolean
     schedules: [Schedule]
     schedule: Schedule
   }
