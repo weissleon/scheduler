@@ -9,7 +9,7 @@ const Login: NextPage = () => {
   const router = useRouter();
 
   // * Context
-  const { accessToken, setAccessToken } =
+  const { token: accessToken, updateToken: setAccessToken } =
     useContext<AccessTokenContextType>(AccessTokenContext);
 
   // * States

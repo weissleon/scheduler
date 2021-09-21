@@ -20,17 +20,26 @@ export function generateAccessToken(id: string): string {
   return token;
 }
 
-export function verifyToken(accessToken: string, tokenType: TOKEN_TYPE) {
+export function verifyToken(token: string, tokenType: TOKEN_TYPE) {
   const key =
     tokenType == TOKEN_TYPE.ACCESS ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
   try {
-    const decodedToken = jwt.verify(accessToken, key);
+    const decodedToken = jwt.verify(token, key);
     return {
       isValid: true,
       payload: { id: (decodedToken as { id: string }).id },
     };
   } catch (error) {
     return { isValid: false, payload: null };
+  }
+}
+
+export function decodeToken(token: string) {
+  try {
+    const decodedToken = jwt.decode(token);
+    return (decodedToken as { id: string }).id;
+  } catch (error) {
+    return null;
   }
 }
 

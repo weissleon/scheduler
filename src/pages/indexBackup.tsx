@@ -40,7 +40,8 @@ const Home: NextPage = () => {
   const [schedules, setSchedules] = useState<Schedule[] | null>(null);
 
   // * Context
-  const { accessToken, setAccessToken } = useContext(AccessTokenContext);
+  const { token: accessToken, updateToken: setAccessToken } =
+    useContext(AccessTokenContext);
 
   // * Router
   const router = useRouter();

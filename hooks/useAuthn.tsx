@@ -7,7 +7,11 @@ import {
 } from "react";
 import { useQuery } from "react-query";
 
-const AuthnContext = createContext<string | null>(null);
+const AuthnContext = createContext<{
+  token: string | null;
+  updateToken: (newToken: string) => void;
+  revokeToken: () => void;
+}>({ token: null, updateToken: () => {}, revokeToken: () => {} });
 
 type Props = {
   children: ReactNode;
@@ -17,12 +21,19 @@ export const AuthnProvider = ({ children }: Props) => {
     await fetch("/api/auth/refresh_token");
   });
 
-  console.log(data);
-
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
+  const updateToken = (newToken: string) => {
+    setAccessToken(newToken);
+  };
+  const revokeToken = () => {
+    setAccessToken(null);
+  };
+
   return (
-    <AuthnContext.Provider value={accessToken}>
+    <AuthnContext.Provider
+      value={{ token: accessToken, updateToken, revokeToken }}
+    >
       {children}
     </AuthnContext.Provider>
   );

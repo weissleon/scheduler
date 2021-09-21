@@ -1,18 +1,45 @@
-import { login } from "@util/app/LoginManager";
 import { NextPage } from "next";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { useRouter } from "next/router";
-import Cookies from "js-cookie";
+import { Button } from "@mui/material";
+import { fetchJson, METHOD_POST } from "@util/api/NetworkUtil";
+import { AccessTokenContext } from "./_app";
 
-const SignIn: NextPage = () => {
+const SignIn: NextPage & { isPublic: boolean } = () => {
   // * Router
   const router = useRouter();
+
+  // * Context
+  const { updateToken } = useContext(AccessTokenContext);
 
   // * States
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = async (e: FormEvent) => {};
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      email: { value: string };
+      password: { value: string };
+    };
+    const email = target.email.value;
+    const password = target.password.value;
+
+    const payload = { email: email, password: password };
+
+    const { accessToken } = await fetchJson("/api/auth/login", {
+      method: METHOD_POST,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (accessToken) {
+      updateToken(accessToken);
+      router.replace("/schedule");
+    }
+  };
 
   return (
     <div className="grid min-h-screen place-items-center">
@@ -37,7 +64,9 @@ const SignIn: NextPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">Sign in</button>
+          <Button variant="contained" type="submit">
+            Sign in
+          </Button>
         </form>
       </Card>
     </div>
@@ -68,5 +97,7 @@ const Card = ({
     </div>
   );
 };
+
+SignIn.isPublic = true;
 
 export default SignIn;

@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import jwt from "jsonwebtoken";
 import { User } from "@models/user";
 import mongoose from "mongoose";
+import { connectToDatabase } from "@util/api/DatabaseManager";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "@util/api/TokenManager";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,26 +13,32 @@ export default async function handler(
 ) {
   const { email, password } = req.body;
 
+  // If invalid arguments are passed, return error.
   if (!email || !password) return res.status(400).end("Invalid input");
-  if (mongoose.connection.readyState !== 2)
-    await mongoose.connect(process.env.DB_MONGODB_URL as string);
 
+  // If database is not connected, connect to the database first.
+  if (mongoose.connection.readyState !== 2) await connectToDatabase();
+
+  // Check if the user credentials is valid.
   const user = await User.findOne({ email, password });
-  if (user) return res.status(200).json({ msg: "Successful" });
-  if (!user) return res.status(401).json({ msg: "Failed" });
-  // // Set refresh token as a header.
-  // res.setHeader(
-  //     "Set-Cookie",
-  //     `token_refresh=${refreshToken};httpOnly;Secure;Path=/api/auth/refresh_token;Max-Age=${
-  //       60 * 60 * 24 * 7
-  //     }`
-  //   );
 
-  // Set refresh token as a header.
+  // If the user credentials is invalid, return error.
+  if (!user) return res.status(200).json({ accessToken: null });
+
+  // Generate tokens.
+  const accessToken = generateAccessToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+
+  user.refreshTokens.push(refreshToken);
+  await user.save();
+  // Send refreshToken as cookie.
   res.setHeader(
     "Set-Cookie",
-    `hello=world;httpOnly;Secure;Path=/;Max-Age=${60 * 60 * 24 * 7}`
+    `refreshToken=${refreshToken};httpOnly;Secure;Path=/;Max-Age=${
+      60 * 60 * 24 * 7
+    }`
   );
 
-  res.end("Cookie added");
+  // Send accessToken as a response.
+  res.status(200).json({ accessToken: accessToken });
 }
