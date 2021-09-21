@@ -2,6 +2,7 @@ import { Typography, AppBar, Toolbar, Button } from "@mui/material";
 import { useRouter } from "next/router";
 
 const ENDPOINT_SIGN_UP = "/sign_up";
+const ENDPOINT_MAIN = "/schedule";
 
 const Appbar = () => {
   // Create a router
@@ -12,13 +13,25 @@ const Appbar = () => {
     router.push(ENDPOINT_SIGN_UP);
   }
 
+  function goToMain() {
+    if (router.asPath == ENDPOINT_MAIN) return;
+    router.push(ENDPOINT_MAIN);
+  }
+
   return (
     <>
       <AppBar position="relative">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Schedular
-          </Typography>
+          <>
+            <Typography
+              onClick={goToMain}
+              variant="h6"
+              color="inherit"
+              sx={{ cursor: "pointer", flexGrow: 1 }}
+            >
+              Schedular
+            </Typography>
+          </>
           <Button variant="text" color="inherit">
             <Typography variant="button">Sign In</Typography>
           </Button>

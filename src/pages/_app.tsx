@@ -1,4 +1,3 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import {
@@ -11,6 +10,10 @@ import {
 import { getLogInStatus } from "@util/app/AuthenticationManager";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Appbar from "@components/Appbar";
+import { LocalizationProvider } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { CssBaseline } from "@mui/material";
+import { AuthnProvider } from "hooks/useAuthn";
 
 export type AccessTokenContextType = {
   accessToken: string | null;
@@ -26,16 +29,8 @@ export const AccessTokenContext = createContext<AccessTokenContextType>({
 
 function MyApp({ Component, pageProps }: AppProps) {
   // * States
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    (async () => {
-      const token = await getLogInStatus();
-      setAccessToken(token);
-      setIsLoading((prev) => false);
-    })();
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>
@@ -45,16 +40,19 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
       </Head>
-      <QueryClientProvider client={queryClient}>
-        <AccessTokenContext.Provider value={{ accessToken, setAccessToken }}>
-          {!isLoading && (
-            <>
-              <Appbar />
-              <Component {...pageProps} />
-            </>
-          )}
-        </AccessTokenContext.Provider>
-      </QueryClientProvider>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <QueryClientProvider client={queryClient}>
+          <AuthnProvider>
+            {!isLoading && (
+              <>
+                <Appbar />
+                <Component {...pageProps} />
+              </>
+            )}
+          </AuthnProvider>
+        </QueryClientProvider>
+      </LocalizationProvider>
     </>
   );
 }
