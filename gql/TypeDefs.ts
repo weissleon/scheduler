@@ -2,9 +2,10 @@ import { gql } from "apollo-server-micro";
 
 export const typeDefs = gql`
   scalar Timestamp
+  scalar GraphQLObjectId
 
   type User {
-    _id: String!
+    _id: GraphQLObjectId!
     name: String!
     email: String!
     password: String!
@@ -21,7 +22,7 @@ export const typeDefs = gql`
   }
 
   type Schedule {
-    _id: String!
+    _id: GraphQLObjectId!
     creator: User!
     participants: [Participant]!
     title: String!
@@ -39,7 +40,7 @@ export const typeDefs = gql`
   }
 
   input ScheduleInput {
-    creatorId: String
+    creatorId: GraphQLObjectId
     participants: [ParticipantInput]
     title: String
     detail: String
@@ -52,8 +53,8 @@ export const typeDefs = gql`
   }
 
   input ParticipantInput {
-    userId: String
-    inviterId: String
+    userId: GraphQLObjectId
+    inviterId: GraphQLObjectId
     permission: Int
     status: Int
   }

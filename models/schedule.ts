@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export type Schedule = {
   _id: mongoose.ObjectId;
-  creatorId: string;
+  creatorId: mongoose.ObjectId;
   participants: Participant[];
   title: string;
   detail: string;
@@ -13,8 +13,8 @@ export type Schedule = {
 };
 
 export type Participant = {
-  userId: string;
-  inviterId: string;
+  userId: mongoose.ObjectId;
+  inviterId: mongoose.ObjectId;
   permission: number;
   status: number;
 };
@@ -22,11 +22,11 @@ export type Participant = {
 const ParticipantSchema = new mongoose.Schema<Participant>(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     inviterId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     permission: {
@@ -43,7 +43,7 @@ const ParticipantSchema = new mongoose.Schema<Participant>(
 
 const ScheduleSchema = new mongoose.Schema<Schedule>({
   creatorId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   participants: {

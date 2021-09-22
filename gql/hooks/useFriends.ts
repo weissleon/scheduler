@@ -14,6 +14,6 @@ const GQL_CMD = gql`
 `;
 export const useFriends = (filter: { userId: string }) =>
   useQuery(
-    "schedules",
+    "friends",
     async () => await request(ENDPOINT, GQL_CMD, { ...filter })
   );

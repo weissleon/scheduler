@@ -1,10 +1,11 @@
 import { Schedule } from "@models/schedule";
 import { User } from "@models/user";
-import { TimestampScalar } from "./Scalars";
+import { GraphQLObjectIdScalar, TimestampScalar } from "./Scalars";
 import mongoose from "mongoose";
 
 export const resolvers = {
   Timestamp: TimestampScalar,
+  GraphQLObjectId: GraphQLObjectIdScalar,
   User: {
     schedules: async ({ _id }: { _id: string }, __: any, context: any) => {
       const schedules = await Schedule.find({
