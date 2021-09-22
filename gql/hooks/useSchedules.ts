@@ -3,8 +3,8 @@ import { request, gql } from "graphql-request";
 
 const ENDPOINT = "/api/graphql";
 const GQL_CMD = gql`
-  query {
-    schedules {
+  query Schedules($filter: ScheduleFilter!) {
+    schedules(filter: $filter) {
       _id
       creator {
         _id
@@ -27,5 +27,8 @@ const GQL_CMD = gql`
     }
   }
 `;
-export const useSchedules = () =>
-  useQuery("schedules", async () => await request(ENDPOINT, GQL_CMD));
+export const useSchedules = (filter: { id: string }) =>
+  useQuery(
+    "schedules",
+    async () => await request(ENDPOINT, GQL_CMD, { filter })
+  );

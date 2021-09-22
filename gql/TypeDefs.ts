@@ -47,6 +47,10 @@ export const typeDefs = gql`
     tsEnd: Timestamp
   }
 
+  input ScheduleFilter {
+    id: String
+  }
+
   input ParticipantInput {
     userId: String
     inviterId: String
@@ -54,11 +58,15 @@ export const typeDefs = gql`
     status: Int
   }
 
+  input FriendFilter {
+    userId: String
+  }
+
   type Query {
     users: [User]
     user(id: String!): User
     userExist(email: String!): Boolean
-    schedules: [Schedule]
+    schedules(filter: ScheduleFilter!): [Schedule]
     schedule: Schedule
   }
 

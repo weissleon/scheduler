@@ -4,7 +4,7 @@ import {
   generateAccessToken,
   TOKEN_TYPE,
   verifyToken,
-} from "@util/api/TokenManager";
+} from "@util/api/TokenAPI";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

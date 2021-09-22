@@ -6,7 +6,6 @@ export type User = {
   email: string;
   password: string;
   friendIds: mongoose.ObjectId[];
-  refreshTokens: string[];
   tsCreated?: number;
 };
 
@@ -25,10 +24,6 @@ const UserSchema = new mongoose.Schema<User>({
   },
   friendIds: {
     type: [mongoose.SchemaTypes.ObjectId],
-    required: true,
-  },
-  refreshTokens: {
-    type: [String],
     required: true,
   },
   tsCreated: {

@@ -62,8 +62,17 @@ export const resolvers = {
       const user = await User.findOne({ email: email });
       return user ? true : false;
     },
-    schedules: async () => {
-      const schedules = await Schedule.find();
+    schedules: async (
+      _: any,
+      { filter: { id } }: { filter: { id: string } },
+      context: any
+    ) => {
+      let schedules;
+      if (id)
+        schedules = await Schedule.find({
+          participants: { $elemMatch: { userId: id } },
+        });
+      if (!id) schedules = await Schedule.find();
       return schedules;
     },
     schedule: async (_: any, { id }: { id: string }, context: any) => {

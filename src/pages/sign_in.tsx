@@ -1,33 +1,34 @@
-import { NextPage } from "next";
-import { FormEvent, useContext, useState } from "react";
+import { GetServerSideProps, NextPage } from "next";
+import { FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@mui/material";
-import { fetchJson, METHOD_POST } from "@util/api/NetworkUtil";
-import { AccessTokenContext } from "./_app";
+import {
+  Typography,
+  CircularProgress,
+  Paper,
+  Box,
+  Container,
+  TextField,
+  Button,
+} from "@mui/material";
+import { METHOD_POST } from "@util/api/NetworkUtil";
+import { useQuery } from "react-query";
 
-const SignIn: NextPage & { isPublic: boolean } = () => {
+const SignIn: NextPage = () => {
   // * Router
   const router = useRouter();
 
-  // * Context
-  const { updateToken } = useContext(AccessTokenContext);
-
   // * States
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const target = e.target as typeof e.target & {
-      email: { value: string };
-      password: { value: string };
-    };
-    const email = target.email.value;
-    const password = target.password.value;
-
+  const handleSignIn = async () => {
+    setIsLoading(true);
+    const email = emailRef!.current!.value.trim();
+    const password = passwordRef!.current!.value.trim();
     const payload = { email: email, password: password };
 
-    const { accessToken } = await fetchJson("/api/auth/login", {
+    const { ok } = await fetch("/api/auth/login", {
       method: METHOD_POST,
       headers: {
         "Content-Type": "application/json",
@@ -35,69 +36,55 @@ const SignIn: NextPage & { isPublic: boolean } = () => {
       body: JSON.stringify(payload),
     });
 
-    if (accessToken) {
-      updateToken(accessToken);
-      router.replace("/schedule");
+    setIsLoading(false);
+
+    if (ok) {
+      router.reload();
     }
   };
 
   return (
-    <div className="grid min-h-screen place-items-center">
-      <Card minHeight={500} minWidth={800}>
-        <form
-          className="grid min-h-0 h-full place-items-center"
-          onSubmit={handleSubmit}
-          method="post"
-        >
-          <div>Login</div>
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="text"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button variant="contained" type="submit">
-            Sign in
-          </Button>
-        </form>
-      </Card>
-    </div>
-  );
-};
-
-type CardProp = {
-  children?: any;
-  minWidth?: number;
-  maxWidth?: number;
-  minHeight?: number;
-  maxHeight?: number;
-};
-const Card = ({
-  children,
-  minWidth,
-  maxWidth,
-  minHeight,
-  maxHeight,
-}: CardProp) => {
-  return (
-    <div
-      className={
-        "relative px-4 py-2 min-w-[400px] min-h-[500px] h-[500px] shadow-md"
-      }
+    <Container
+      maxWidth="lg"
+      sx={{ display: "grid", height: "calc(100vh - 64px)" }}
     >
-      {children}
-    </div>
+      <Box py={2} justifySelf="center" alignSelf="center" position="relative">
+        <Paper>
+          <Box p={2} display="flex" flexDirection="column" gap={2}>
+            <TextField
+              inputRef={emailRef}
+              type="email"
+              label="Email"
+              variant="outlined"
+            />
+            <TextField
+              inputRef={passwordRef}
+              type="password"
+              label="Password"
+              variant="outlined"
+            />
+            <Button variant="contained" onClick={handleSignIn}>
+              {isLoading ? (
+                <CircularProgress color="inherit" size={30} />
+              ) : (
+                <Typography>Sign In</Typography>
+              )}
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
-SignIn.isPublic = true;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Currently there is no refreshToken validation.
+  let { refreshToken } = context.req.cookies;
+  if (refreshToken)
+    return { redirect: { destination: "/schedule", permanent: false } };
+  return {
+    props: {},
+  };
+};
 
 export default SignIn;

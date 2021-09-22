@@ -27,18 +27,10 @@ const MenuProps = {
   },
 };
 
-// Dummy
-const names = [
-  "Denis Cho",
-  "Dana Cho",
-  "Esther Kim",
-  "Klaus Cho",
-  "Grace Yeon",
-  "Yubin Cho",
-  "Sined Cho",
-];
-
-export const ScheduleInserter = () => {
+type Props = {
+  friends: { _id: string; name: string }[];
+};
+export const ScheduleInserter = ({ friends }: Props) => {
   const [startDateTime, setStartDateTime] = useState<Date | null>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date | null>(new Date());
 
@@ -110,11 +102,13 @@ export const ScheduleInserter = () => {
               )}
               MenuProps={MenuProps}
             >
-              {names.map((name) => (
-                <MenuItem key={name} value={name}>
-                  {name}
-                </MenuItem>
-              ))}
+              {friends &&
+                friends.length > 0 &&
+                friends.map((friend) => (
+                  <MenuItem key={friend._id} value={friend.name}>
+                    {friend.name}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
         </Box>

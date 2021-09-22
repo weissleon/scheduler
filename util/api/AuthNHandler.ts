@@ -1,7 +1,4 @@
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "@util/api/TokenManager";
+import { generateAccessToken, generateRefreshToken } from "@util/api/TokenAPI";
 import { UserPriv } from "@util/app/UserManager";
 import { getAllUsers } from "./UserHandler";
 

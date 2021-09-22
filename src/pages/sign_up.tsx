@@ -3,7 +3,7 @@ import { Box, Container } from "@mui/material";
 import { SignUpBoard } from "@components/SignUpBoard";
 import { useAddUser } from "@gql/hooks/useAddUser";
 
-const SignUp: NextPage & { isPublic: boolean } = () => {
+const SignUp: NextPage = () => {
   const { isLoading: isProcessing, isError, isSuccess, mutate } = useAddUser();
 
   function handleSignUpClick(name: string, email: string, password: string) {
@@ -24,6 +24,5 @@ const SignUp: NextPage & { isPublic: boolean } = () => {
     </Container>
   );
 };
-SignUp.isPublic = true;
 
 export default SignUp;

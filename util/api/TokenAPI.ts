@@ -9,13 +9,13 @@ export enum TOKEN_TYPE {
 const ACCESS_TOKEN_SECRET = "AKLADENIA";
 const REFRESH_TOKEN_SECRET = "WEISSLEON";
 
-const ACCESS_TOKEN_EXP = 3 * 60;
-const REFRESH_TOKEN_EXP = 60 * 60 * 24 * 7 * 2; // 2 weeks
+export const ACCESS_TOKEN_AGE = 3 * 60;
+export const REFRESH_TOKEN_AGE = 60 * 60 * 24 * 7 * 2; // 2 weeks
 
 export function generateAccessToken(id: string): string {
   const payload = { id: id };
   const token = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-    expiresIn: ACCESS_TOKEN_EXP,
+    expiresIn: ACCESS_TOKEN_AGE,
   });
   return token;
 }
@@ -46,7 +46,7 @@ export function decodeToken(token: string) {
 export function generateRefreshToken(id: string): string {
   const payload = { id: id };
   const token = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
-    expiresIn: REFRESH_TOKEN_EXP,
+    expiresIn: REFRESH_TOKEN_AGE,
   });
   return token;
 }
