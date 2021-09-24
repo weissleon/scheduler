@@ -125,7 +125,7 @@ export const resolvers = {
       { id, data }: { id: string; data: Schedule },
       context: any
     ) => {
-      const updatedSchedule = await User.findByIdAndUpdate(id, data, {
+      const updatedSchedule = await Schedule.findByIdAndUpdate(id, data, {
         new: true,
       });
       return updatedSchedule;

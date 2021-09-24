@@ -15,6 +15,10 @@ const GQL_CMD = gql`
           _id
           name
         }
+        inviter {
+          _id
+          name
+        }
         permission
         status
       }

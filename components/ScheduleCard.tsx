@@ -17,16 +17,18 @@ import {
   DialogActions,
   ListItemIcon,
   MenuList,
-  Paper,
 } from "@mui/material";
 import { DeleteForever, PlayArrow, Stop, MoreVert } from "@mui/icons-material";
 import { format } from "date-fns";
 import React, { useState, MouseEvent } from "react";
 import { useDeleteSchedule } from "@gql/hooks/useDeleteSchedule";
 import { useQueryClient } from "react-query";
+import { ScheduleStatus } from "@util/app/ScheduleManager";
+import { useUpdateParticipantStatus } from "@gql/hooks/useUpdateParticipantStatus";
 
 // * TYPES
 type Props = {
+  userId: string;
   schedule: {
     _id: string;
     creator: {
@@ -35,6 +37,10 @@ type Props = {
     };
     participants: {
       user: {
+        _id: string;
+        name: string;
+      };
+      inviter: {
         _id: string;
         name: string;
       };
@@ -50,13 +56,30 @@ type Props = {
   };
 };
 
-const ScheduleCard = ({ schedule }: Props) => {
+const ScheduleCard = ({ userId, schedule }: Props) => {
+  const status = schedule.participants.filter(
+    (participant) => participant.user._id === userId
+  )[0].status;
+
   // * STATES
   // These are for the menu popups
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+
+  // * HOOKS
+  const queryClient = useQueryClient();
+  const {
+    isLoading: isDeleting,
+    isError: isDeleteError,
+    mutate: deleteSchedule,
+  } = useDeleteSchedule(schedule.creator._id, queryClient);
+  const {
+    isLoading: isUpdating,
+    isError: isUpdateError,
+    mutate: updateStatus,
+  } = useUpdateParticipantStatus(schedule, userId, queryClient);
 
   // * FUNCTIONS
   function onMoreClicked(event: MouseEvent) {
@@ -87,13 +110,12 @@ const ScheduleCard = ({ schedule }: Props) => {
     setIsDeleteDialogOpen(false);
   }
 
-  // * HOOKS
-  const queryClient = useQueryClient();
-  const {
-    isLoading: isDeleting,
-    isError,
-    mutate: deleteSchedule,
-  } = useDeleteSchedule(schedule.creator._id, queryClient);
+  function onAcceptClicked(event: MouseEvent) {
+    updateStatus({ participantStatus: ScheduleStatus.CONFIRMED });
+  }
+  function onRejectClicked(event: MouseEvent) {
+    updateStatus({ participantStatus: ScheduleStatus.DECLINED });
+  }
 
   return (
     <Container maxWidth="xs">
@@ -156,11 +178,18 @@ const ScheduleCard = ({ schedule }: Props) => {
             <Box display="flex">
               <Typography>{schedule.detail}</Typography>
             </Box>
-            <Divider />
-            <Box mt={1} display="flex" gap={1} justifyContent="right">
-              <Button variant="contained">Accept</Button>
-              <Button>Reject</Button>
-            </Box>
+
+            {status == ScheduleStatus.PENDING && (
+              <>
+                <Divider />
+                <Box mt={1} display="flex" gap={1} justifyContent="right">
+                  <Button onClick={onAcceptClicked} variant="contained">
+                    Accept
+                  </Button>
+                  <Button onClick={onRejectClicked}>Reject</Button>
+                </Box>
+              </>
+            )}
           </Box>
         </AccordionDetails>
       </Accordion>

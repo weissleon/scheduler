@@ -1,6 +1,5 @@
 import { QueryClient, useMutation } from "react-query";
 import { request, gql } from "graphql-request";
-import { useQueryClient } from "react-query";
 
 type Filter = {
   scheduleId: string;

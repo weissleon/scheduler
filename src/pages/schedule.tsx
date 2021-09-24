@@ -47,7 +47,13 @@ const Schedule: NextPage<Props> = ({ token }) => {
         )}
         {data.schedules.length > 0 &&
           data.schedules.map((schedule: any) => {
-            return <ScheduleCard key={schedule._id} schedule={schedule} />;
+            return (
+              <ScheduleCard
+                userId={userId!}
+                key={schedule._id}
+                schedule={schedule}
+              />
+            );
           })}
         <Fab
           onClick={goToAddSchedule}

@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { generateAccessToken } from "@util/api/TokenAPI";
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(req.url);
   const { refreshToken } = req.body;
   if (!refreshToken) return res.status(401).end("Invalid input");
 
