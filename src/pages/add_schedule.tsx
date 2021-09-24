@@ -23,6 +23,8 @@ import { DateTimePicker } from "@mui/lab";
 import { useRef, useState } from "react";
 import { useAddSchedule } from "@gql/hooks/useAddSchedule";
 import { addHours } from "date-fns";
+import Appbar from "@components/Appbar";
+import { useQueryClient } from "react-query";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -43,9 +45,22 @@ type FriendProps = {
   _id: string;
   name: string;
 };
+
+// * MAIN FUNCTION
 const AddSchedule: NextPage<Props> = ({ token }) => {
-  const router = useRouter();
+  // * Extract userId
   const userId = decodeToken(token);
+
+  // * HOOKS
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const {
+    isLoading: isProcessing,
+    isError,
+    mutate,
+    isSuccess,
+  } = useAddSchedule(userId!, queryClient);
+
   const { isLoading, data } = useFriends({ userId: userId! });
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -59,12 +74,10 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
   const [participantList, setParticipantList] = useState<FriendProps[]>([]);
   const [indices, setIndices] = useState<number[]>([]);
 
-  const {
-    isLoading: isProcessing,
-    isError,
-    mutate,
-    isSuccess,
-  } = useAddSchedule();
+  async function logOut() {
+    const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
+    if (ok) router.reload();
+  }
 
   async function handleAddScheduleClick() {
     const title = titleRef!.current!.value;
@@ -103,6 +116,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
     );
   return (
     <>
+      <Appbar isSignedIn={token ? true : false} onSignOut={logOut} />
       <Container sx={{ marginTop: "16px" }}>
         <Container maxWidth="md">
           <Paper elevation={2} sx={{ px: "16px", py: "16px" }}>

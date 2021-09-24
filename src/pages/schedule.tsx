@@ -1,7 +1,7 @@
 import { useSchedules } from "@gql/hooks/useSchedules";
 import { GetServerSideProps, NextPage } from "next";
 import ScheduleCard from "@components/ScheduleCard";
-import { CircularProgress, Container, Fab } from "@mui/material";
+import { Typography, CircularProgress, Container, Fab } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import cookie from "cookie";
@@ -40,6 +40,11 @@ const Schedule: NextPage<Props> = ({ token }) => {
     <>
       <Appbar isSignedIn={token ? true : false} onSignOut={logOut} />
       <Container sx={{ marginY: "16px" }} maxWidth="xl">
+        {data.schedules.length == 0 && (
+          <Typography variant="h4" textAlign="center">
+            Thare are no schedules :(
+          </Typography>
+        )}
         {data.schedules.length > 0 &&
           data.schedules.map((schedule: any) => {
             return <ScheduleCard key={schedule._id} schedule={schedule} />;

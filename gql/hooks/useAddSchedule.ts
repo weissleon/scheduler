@@ -1,6 +1,5 @@
-import { useMutation } from "react-query";
+import { QueryClient, useMutation } from "react-query";
 import { request, gql } from "graphql-request";
-import { useQueryClient } from "react-query";
 
 type ScheduleInput = {
   creatorId: string;
@@ -16,7 +15,7 @@ type ScheduleInput = {
   tsEnd: number;
 };
 
-export const useAddSchedule = () =>
+export const useAddSchedule = (userId: string, queryClient: QueryClient) =>
   useMutation(
     async (data: ScheduleInput) =>
       await request(
@@ -32,8 +31,7 @@ export const useAddSchedule = () =>
       ),
     {
       onSuccess: () => {
-        const queryClient = useQueryClient();
-        queryClient.invalidateQueries("schedules");
+        queryClient.invalidateQueries(["schedules", userId]);
       },
     }
   );

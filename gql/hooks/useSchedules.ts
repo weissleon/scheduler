@@ -29,6 +29,6 @@ const GQL_CMD = gql`
 `;
 export const useSchedules = (filter: { id: string }) =>
   useQuery(
-    "schedules",
+    ["schedules", filter.id],
     async () => await request(ENDPOINT, GQL_CMD, { filter })
   );
