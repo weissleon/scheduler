@@ -25,6 +25,7 @@ export const typeDefs = gql`
     _id: GraphQLObjectId!
     creator: User!
     participants: [Participant]!
+    status: Int!
     title: String!
     detail: String!
     tsStart: Timestamp!
@@ -42,6 +43,7 @@ export const typeDefs = gql`
   input ScheduleInput {
     creatorId: GraphQLObjectId
     participants: [ParticipantInput]
+    status: Int
     title: String
     detail: String
     tsStart: Timestamp

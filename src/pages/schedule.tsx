@@ -1,12 +1,21 @@
 import { useSchedules } from "@gql/hooks/useSchedules";
 import { GetServerSideProps, NextPage } from "next";
 import ScheduleCard from "@components/ScheduleCard";
-import { Typography, CircularProgress, Container, Fab } from "@mui/material";
+import {
+  Divider,
+  Typography,
+  CircularProgress,
+  Container,
+  Fab,
+} from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import cookie from "cookie";
 import Appbar from "@components/Appbar";
 import { decodeToken } from "@util/api/TokenAPI";
+import { isToday } from "date-fns";
+import { ScheduleStatus } from "@util/app/ScheduleManager";
+import { useMemo } from "react";
 
 type Props = {
   token: string;
@@ -27,6 +36,38 @@ const Schedule: NextPage<Props> = ({ token }) => {
     if (ok) router.reload();
   }
 
+  const todaySchedules = useMemo(
+    () =>
+      data
+        ? data.schedules.filter(
+            (schedule) =>
+              (isToday(schedule.tsStart) || isToday(schedule.tsEnd)) &&
+              schedule.status == ScheduleStatus.CONFIRMED
+          )
+        : null,
+    [data]
+  );
+
+  const pendingSchedules = useMemo(
+    () =>
+      data
+        ? data.schedules.filter(
+            (schedule) => schedule.status == ScheduleStatus.PENDING
+          )
+        : null,
+    [data]
+  );
+
+  const pastSchedules = useMemo(
+    () =>
+      data
+        ? data.schedules.filter(
+            (schedule) => !isToday(schedule.tsStart) && !isToday(schedule.tsEnd)
+          )
+        : null,
+    [data]
+  );
+
   if (isLoading)
     return (
       <Container
@@ -38,23 +79,45 @@ const Schedule: NextPage<Props> = ({ token }) => {
     );
   return (
     <>
-      <Appbar isSignedIn={token ? true : false} onSignOut={logOut} />
-      <Container sx={{ marginY: "16px" }} maxWidth="xl">
-        {data.schedules.length == 0 && (
+      <Appbar userId={userId as string} onSignOut={logOut} />
+
+      <Container sx={{ marginY: "16px" }} maxWidth="md">
+        {data && data.schedules.length == 0 && (
           <Typography variant="h4" textAlign="center">
             Thare are no schedules :(
           </Typography>
         )}
-        {data.schedules.length > 0 &&
-          data.schedules.map((schedule: any) => {
-            return (
-              <ScheduleCard
-                userId={userId!}
-                key={schedule._id}
-                schedule={schedule}
-              />
-            );
-          })}
+
+        <Typography variant="h4">Today</Typography>
+        <Divider sx={{ my: "8px" }} />
+        {todaySchedules &&
+          todaySchedules.map((schedule) => (
+            <ScheduleCard
+              userId={userId!}
+              key={schedule._id}
+              schedule={schedule}
+            />
+          ))}
+        <Typography variant="h4">Pending</Typography>
+        <Divider sx={{ my: "8px" }} />
+        {pendingSchedules &&
+          pendingSchedules.map((schedule) => (
+            <ScheduleCard
+              userId={userId!}
+              key={schedule._id}
+              schedule={schedule}
+            />
+          ))}
+        <Typography variant="h4">Past</Typography>
+        <Divider sx={{ my: "8px" }} />
+        {pastSchedules &&
+          pastSchedules.map((schedule) => (
+            <ScheduleCard
+              userId={userId!}
+              key={schedule._id}
+              schedule={schedule}
+            />
+          ))}
         <Fab
           onClick={goToAddSchedule}
           sx={{ position: "absolute", right: "32px", bottom: "32px" }}

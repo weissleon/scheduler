@@ -1,11 +1,11 @@
-import { QueryClient, useMutation } from "react-query";
+import { useQueryClient, useMutation } from "react-query";
 import { request, gql } from "graphql-request";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
 
+// * TYPES
 type Filter = {
   participantStatus: ScheduleStatus;
 };
-
 type Schedule = {
   _id: string;
   creator: {
@@ -24,6 +24,8 @@ type Schedule = {
     permission: number;
     status: number;
   }[];
+
+  status: number;
   title: string;
   detail: string;
   tsStart: number;
@@ -32,49 +34,57 @@ type Schedule = {
   tsLastUpdated: number;
 };
 
+// * CONSTANTS
+const ENDPOINT_URL = "/api/graphql";
+const UPDATE_PARTICIPANT_QUERY = gql`
+  mutation UpdateSchedule($scheduleId: String!, $data: ScheduleInput!) {
+    updateSchedule(id: $scheduleId, data: $data) {
+      title
+    }
+  }
+`;
+
 export const useUpdateParticipantStatus = (
   schedule: Schedule,
-  userId: string,
-  queryClient: QueryClient
+  userId: string
 ) => {
+  const queryClient = useQueryClient();
+
   return useMutation(
     async (filter: Filter) => {
-      const { participants } = schedule;
+      const { participants: oldParticipants } = schedule;
 
-      const newParticipantList = [];
-      newParticipantList.push(
-        ...participants
-          .filter((participant) => participant.user._id != userId)
-          .map((participant) => ({
-            userId: participant.user._id,
-            inviterId: participant.inviter._id,
-            permission: participant.permission,
-            status: participant.status,
-          }))
-      );
+      const newParticipants = oldParticipants.map((participant) => {
+        if (participant.user._id == userId)
+          return { ...participant, status: filter.participantStatus };
+        return participant;
+      });
 
-      newParticipantList.push(
-        ...participants
-          .filter((participant) => participant.user._id == userId)
-          .map((participant) => ({
-            userId: participant.user._id,
-            inviterId: participant.inviter._id,
-            permission: participant.permission,
-            status: filter.participantStatus,
-          }))
-      );
+      let confirmed = false;
 
-      return await request(
-        "/api/graphql",
-        gql`
-          mutation UpdateSchedule($scheduleId: String!, $data: ScheduleInput!) {
-            updateSchedule(id: $scheduleId, data: $data) {
-              title
-            }
-          }
-        `,
-        { scheduleId: schedule._id, data: { participants: newParticipantList } }
+      const result = newParticipants.find(
+        (participant) => participant.status != ScheduleStatus.CONFIRMED
       );
+      if (!result) confirmed = true;
+
+      const participants = newParticipants.map((participant) => {
+        return {
+          userId: participant.user._id,
+          inviterId: participant.inviter._id,
+          permission: participant.permission,
+          status: participant.status,
+        };
+      });
+
+      const data = {
+        participants: participants,
+        status: confirmed ? ScheduleStatus.CONFIRMED : undefined,
+      };
+
+      return await request(ENDPOINT_URL, UPDATE_PARTICIPANT_QUERY, {
+        scheduleId: schedule._id,
+        data: data,
+      });
     },
     {
       onSuccess: () => {

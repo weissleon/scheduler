@@ -4,6 +4,7 @@ export type Schedule = {
   _id: mongoose.ObjectId;
   creatorId: mongoose.ObjectId;
   participants: Participant[];
+  status: number;
   title: string;
   detail: string;
   tsStart: number;
@@ -48,6 +49,10 @@ const ScheduleSchema = new mongoose.Schema<Schedule>({
   },
   participants: {
     type: [ParticipantSchema],
+    required: true,
+  },
+  status: {
+    type: Number,
     required: true,
   },
   title: {

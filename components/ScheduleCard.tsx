@@ -47,6 +47,7 @@ type Props = {
       permission: number;
       status: number;
     }[];
+    status: number;
     title: string;
     detail: string;
     tsStart: number;
@@ -79,7 +80,7 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
     isLoading: isUpdating,
     isError: isUpdateError,
     mutate: updateStatus,
-  } = useUpdateParticipantStatus(schedule, userId, queryClient);
+  } = useUpdateParticipantStatus(schedule, userId);
 
   // * FUNCTIONS
   function onMoreClicked(event: MouseEvent) {

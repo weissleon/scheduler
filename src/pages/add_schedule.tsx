@@ -25,6 +25,7 @@ import { useAddSchedule } from "@gql/hooks/useAddSchedule";
 import { addHours } from "date-fns";
 import Appbar from "@components/Appbar";
 import { useQueryClient } from "react-query";
+import { ScheduleStatus } from "@util/app/ScheduleManager";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -74,6 +75,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
   const [participantList, setParticipantList] = useState<FriendProps[]>([]);
   const [indices, setIndices] = useState<number[]>([]);
 
+  // * HANDLERS
   async function logOut() {
     const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
     if (ok) router.reload();
@@ -87,7 +89,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
         userId: participant._id,
         inviterId: userId as string,
         permission: 0,
-        status: 1,
+        status: ScheduleStatus.PENDING,
       };
       return p;
     });
@@ -116,7 +118,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
     );
   return (
     <>
-      <Appbar isSignedIn={token ? true : false} onSignOut={logOut} />
+      <Appbar userId={userId as string} onSignOut={logOut} />
       <Container sx={{ marginTop: "16px" }}>
         <Container maxWidth="md">
           <Paper elevation={2} sx={{ px: "16px", py: "16px" }}>

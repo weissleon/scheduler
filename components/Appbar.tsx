@@ -1,5 +1,14 @@
-import { Typography, AppBar, Toolbar, Button } from "@mui/material";
-import { fetchJson, METHOD_GET } from "@util/api/NetworkUtil";
+import { useUser } from "@gql/hooks/useUser";
+import {
+  Typography,
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
+import { Notifications } from "@mui/icons-material";
 import { useRouter } from "next/router";
 
 const ENDPOINT_SIGN_UP = "/sign_up";
@@ -7,12 +16,14 @@ const ENDPOINT_SIGN_IN = "/sign_in";
 const ENDPOINT_MAIN = "/schedule";
 
 type Props = {
-  isSignedIn: boolean;
+  userId: string;
   onSignOut: () => any;
 };
-const Appbar = ({ isSignedIn, onSignOut }: Props) => {
+const Appbar = ({ userId, onSignOut }: Props) => {
   // Create a router
   const router = useRouter();
+
+  const { isLoading, isError, data } = useUser({ userId: userId });
 
   function goToSignUp() {
     if (router.asPath == ENDPOINT_SIGN_UP) return;
@@ -33,17 +44,33 @@ const Appbar = ({ isSignedIn, onSignOut }: Props) => {
     <>
       <AppBar position="relative">
         <Toolbar sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <>
-            <Typography
-              onClick={goToMain}
-              variant="h6"
-              color="inherit"
-              sx={{ cursor: "pointer", mr: "auto" }}
-            >
-              Schedular
-            </Typography>
-          </>
-          {isSignedIn ? (
+          <Typography
+            onClick={goToMain}
+            variant="h6"
+            color="inherit"
+            sx={{ cursor: "pointer", mr: "auto" }}
+          >
+            Schedular
+          </Typography>
+          <Box>
+            <IconButton disabled color="inherit">
+              <Notifications />
+            </IconButton>
+          </Box>
+          {/* Loading Circle while fetching user data. */}
+          {isLoading && (
+            <Box>
+              <CircularProgress />
+            </Box>
+          )}
+          {data && (
+            <Box>
+              <Button variant="text" color="inherit">
+                <Typography variant="button">{data.user.name}</Typography>
+              </Button>
+            </Box>
+          )}
+          {userId ? (
             <Button onClick={onSignOut} variant="text" color="inherit">
               <Typography variant="button">Sign Out</Typography>
             </Button>

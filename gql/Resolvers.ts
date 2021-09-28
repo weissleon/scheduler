@@ -2,6 +2,7 @@ import { Schedule } from "@models/schedule";
 import { User } from "@models/user";
 import { GraphQLObjectIdScalar, TimestampScalar } from "./Scalars";
 import mongoose from "mongoose";
+import { ScheduleStatus } from "@util/app/ScheduleManager";
 
 export const resolvers = {
   Timestamp: TimestampScalar,
@@ -111,6 +112,7 @@ export const resolvers = {
       const newSchedule = new Schedule({
         creatorId: data.creatorId,
         participants: data.participants,
+        status: ScheduleStatus.PENDING,
         title: data.title,
         detail: data.detail,
         tsStart: data.tsStart,
