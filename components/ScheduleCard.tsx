@@ -16,15 +16,29 @@ import {
   DialogContentText,
   DialogActions,
   ListItemIcon,
+  ListItemAvatar,
+  ListItemText,
+  List,
+  ListItem,
   MenuList,
 } from "@mui/material";
-import { DeleteForever, PlayArrow, Stop, MoreVert } from "@mui/icons-material";
+import {
+  DeleteForever,
+  PlayArrow,
+  Add,
+  Stop,
+  MoreVert,
+  PersonAddAlt1,
+  VerifiedUser,
+  Edit,
+} from "@mui/icons-material";
 import { format } from "date-fns";
-import React, { useState, MouseEvent } from "react";
+import { useState, MouseEvent, FC } from "react";
 import { useDeleteSchedule } from "@gql/hooks/useDeleteSchedule";
-import { useQueryClient } from "react-query";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
 import { useUpdateParticipantStatus } from "@gql/hooks/useUpdateParticipantStatus";
+import { useFriends } from "@gql/hooks/useFriends";
+import Avatar from "react-avatar";
 
 // * TYPES
 type Props = {
@@ -57,6 +71,7 @@ type Props = {
   };
 };
 
+// * MAIN FUNCTION
 const ScheduleCard = ({ userId, schedule }: Props) => {
   const status = schedule.participants.filter(
     (participant) => participant.user._id === userId
@@ -66,16 +81,17 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
   // These are for the menu popups
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [isAddParticipantDialogOpen, setIsAddParticipantDialogOpen] =
+    useState<boolean>(false);
 
   // * HOOKS
-  const queryClient = useQueryClient();
+  const { data } = useFriends({ userId: userId });
   const {
     isLoading: isDeleting,
     isError: isDeleteError,
     mutate: deleteSchedule,
-  } = useDeleteSchedule(schedule.creator._id, queryClient);
+  } = useDeleteSchedule(schedule.creator._id);
   const {
     isLoading: isUpdating,
     isError: isUpdateError,
@@ -114,8 +130,34 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
   function onAcceptClicked(event: MouseEvent) {
     updateStatus({ participantStatus: ScheduleStatus.CONFIRMED });
   }
+
   function onRejectClicked(event: MouseEvent) {
     updateStatus({ participantStatus: ScheduleStatus.DECLINED });
+  }
+  function onAddParticipantsClicked(event: MouseEvent) {
+    event.stopPropagation();
+    setIsAddParticipantDialogOpen(true);
+    setAnchorEl(null);
+  }
+
+  function onAddParticipantDialogClose(event: MouseEvent) {
+    setIsAddParticipantDialogOpen(false);
+  }
+
+  function onAddParticipantDialogApplyButtonClicked(event: MouseEvent) {
+    console.log(`Apply Add Participant Clicked!`);
+  }
+  function onAddParticipantDialogCancelButtonClicked(event: MouseEvent) {
+    setIsAddParticipantDialogOpen(false);
+  }
+
+  function onEditParticipantsPermissionClicked(event: MouseEvent) {
+    event.stopPropagation();
+    console.log(`Edit Permission Clicked!`);
+  }
+  function onEditScheduleClicked(event: MouseEvent) {
+    event.stopPropagation();
+    console.log(`Edit Schedule Cicked!`);
   }
 
   return (
@@ -136,7 +178,25 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
               "aria-labelledby": "basic-button",
             }}
           >
-            <MenuList sx={{ width: 160 }}>
+            <MenuList sx={{ width: 320 }}>
+              <MenuItem onClick={onEditScheduleClicked}>
+                <ListItemIcon>
+                  <Edit fontSize="medium" />
+                </ListItemIcon>
+                <Typography fontSize="medium">Edit Schedule</Typography>
+              </MenuItem>
+              <MenuItem onClick={onAddParticipantsClicked}>
+                <ListItemIcon>
+                  <PersonAddAlt1 fontSize="medium" />
+                </ListItemIcon>
+                <Typography fontSize="medium">Add Participant</Typography>
+              </MenuItem>
+              <MenuItem onClick={onEditParticipantsPermissionClicked}>
+                <ListItemIcon>
+                  <VerifiedUser fontSize="medium" />
+                </ListItemIcon>
+                <Typography fontSize="medium">Edit Permission</Typography>
+              </MenuItem>
               <MenuItem onClick={onDeleteScheduleClick}>
                 <ListItemIcon>
                   <DeleteForever fontSize="medium" />
@@ -145,6 +205,8 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
               </MenuItem>
             </MenuList>
           </Menu>
+
+          {/* Delete Schedule Dialog */}
           <Dialog
             onClick={(event) => event.stopPropagation()}
             open={isDeleteDialogOpen}
@@ -168,6 +230,32 @@ const ScheduleCard = ({ userId, schedule }: Props) => {
                 autoFocus
               >
                 Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {/* Add Participant Dialog */}
+          <Dialog
+            fullWidth={true}
+            maxWidth="xs"
+            onClick={(event) => event.stopPropagation()}
+            open={isAddParticipantDialogOpen}
+            onClose={onAddParticipantDialogClose}
+          >
+            <DialogTitle>{`Add Participant`}</DialogTitle>
+            <DialogContent>
+              {data && <FriendsMenu friends={data.friends} />}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={onAddParticipantDialogCancelButtonClicked}>
+                Cancel
+              </Button>
+              <Button
+                onClick={onAddParticipantDialogApplyButtonClicked}
+                variant="contained"
+                color="primary"
+                autoFocus
+              >
+                Apply
               </Button>
             </DialogActions>
           </Dialog>
@@ -218,6 +306,53 @@ const DateDisplay = ({
         <Typography>{endTime}</Typography>
       </Box>
     </Box>
+  );
+};
+
+type FriendsMenuProps = {
+  friends: {
+    _id: string;
+    name: string;
+  }[];
+};
+
+const FriendsMenu: FC<FriendsMenuProps> = ({ friends }) => {
+  return (
+    <List>
+      <ListItem>
+        <Typography>Friends</Typography>
+      </ListItem>
+
+      {friends &&
+        friends.length > 0 &&
+        friends.map((friend) => {
+          return <FriendRow friend={friend} />;
+        })}
+      <Divider variant="middle" />
+      <ListItem>
+        <Typography>Added</Typography>
+      </ListItem>
+    </List>
+  );
+};
+
+type FriendRowProps = {
+  friend: {
+    _id: string;
+    name: string;
+  };
+};
+const FriendRow: FC<FriendRowProps> = ({ friend }) => {
+  return (
+    <ListItem key={friend._id}>
+      <ListItemAvatar>
+        <Avatar name={friend.name} size="36px" round={true} textSizeRatio={2} />
+      </ListItemAvatar>
+      <ListItemText primary={friend.name} />
+      <IconButton>
+        <Add />
+      </IconButton>
+    </ListItem>
   );
 };
 

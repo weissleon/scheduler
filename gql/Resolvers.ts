@@ -64,6 +64,15 @@ export const resolvers = {
       const user = await User.findOne({ email: email });
       return user ? true : false;
     },
+    friends: async (
+      parent: any,
+      { userId }: { userId: string },
+      context: any
+    ) => {
+      const user = await User.findById(userId);
+      const friends = await User.find({ _id: { $in: user!.friendIds } });
+      return friends;
+    },
     schedules: async (
       _: any,
       { filter: { id } }: { filter: { id: string } },
@@ -112,7 +121,10 @@ export const resolvers = {
       const newSchedule = new Schedule({
         creatorId: data.creatorId,
         participants: data.participants,
-        status: ScheduleStatus.PENDING,
+        status:
+          data.participants.length == 1
+            ? ScheduleStatus.CONFIRMED
+            : ScheduleStatus.PENDING,
         title: data.title,
         detail: data.detail,
         tsStart: data.tsStart,

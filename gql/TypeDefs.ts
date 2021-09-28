@@ -71,6 +71,7 @@ export const typeDefs = gql`
     userExist(email: String!): Boolean
     schedules(filter: ScheduleFilter!): [Schedule]
     schedule: Schedule
+    friends(userId: String!): [User!]
   }
 
   type Mutation {

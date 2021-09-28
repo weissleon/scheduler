@@ -30,7 +30,7 @@ type Schedule = {
   }[];
 };
 const ENDPOINT = "/api/graphql";
-const GQL_CMD = gql`
+const GET_SCHEDULES_QUERY = gql`
   query Schedules($filter: ScheduleFilter!) {
     schedules(filter: $filter) {
       _id
@@ -60,8 +60,10 @@ const GQL_CMD = gql`
     }
   }
 `;
+
+// * MAIN FUNCTION
 export const useSchedules = (filter: { id: string }) =>
   useQuery<Schedule>(
     ["schedules", filter.id],
-    async () => await request(ENDPOINT, GQL_CMD, { filter })
+    async () => await request(ENDPOINT, GET_SCHEDULES_QUERY, { filter })
   );

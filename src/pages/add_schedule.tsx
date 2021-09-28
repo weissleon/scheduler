@@ -60,7 +60,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
     isError,
     mutate,
     isSuccess,
-  } = useAddSchedule(userId!, queryClient);
+  } = useAddSchedule(userId!);
 
   const { isLoading, data } = useFriends({ userId: userId! });
 

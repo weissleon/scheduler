@@ -44,6 +44,7 @@ const UPDATE_PARTICIPANT_QUERY = gql`
   }
 `;
 
+// * MAIN FUNCTION
 export const useUpdateParticipantStatus = (
   schedule: Schedule,
   userId: string

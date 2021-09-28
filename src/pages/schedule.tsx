@@ -17,25 +17,30 @@ import { isToday } from "date-fns";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
 import { useMemo } from "react";
 
+// * TYPES
 type Props = {
   token: string;
 };
-const Schedule: NextPage<Props> = ({ token }) => {
-  const router = useRouter();
 
+// * MAIN FUNCTION
+const Schedule: NextPage<Props> = ({ token }) => {
+  // Extract userId from token
   const userId = decodeToken(token);
 
+  // * HOOKS
+  const router = useRouter();
   const { isLoading, isError, data } = useSchedules({ id: userId! });
 
+  // * HANDLERS
   const goToAddSchedule = () => {
     router.push("/add_schedule");
   };
-
-  async function logOut() {
+  const logOut = async () => {
     const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
     if (ok) router.reload();
-  }
+  };
 
+  // * VALUES
   const todaySchedules = useMemo(
     () =>
       data
@@ -47,7 +52,6 @@ const Schedule: NextPage<Props> = ({ token }) => {
         : null,
     [data]
   );
-
   const pendingSchedules = useMemo(
     () =>
       data
@@ -57,7 +61,6 @@ const Schedule: NextPage<Props> = ({ token }) => {
         : null,
     [data]
   );
-
   const pastSchedules = useMemo(
     () =>
       data
@@ -68,6 +71,7 @@ const Schedule: NextPage<Props> = ({ token }) => {
     [data]
   );
 
+  // * RENDERS
   if (isLoading)
     return (
       <Container
@@ -131,6 +135,7 @@ const Schedule: NextPage<Props> = ({ token }) => {
   );
 };
 
+// * GetServerSideProps
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let { accessToken, refreshToken } = context.req.cookies;
   if (!refreshToken) {
