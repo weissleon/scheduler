@@ -8,8 +8,10 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import { Notifications } from "@mui/icons-material";
+import { Notifications, ConfirmationNumber } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { useFriends } from "@gql/hooks/useFriends";
+import { MouseEvent } from "react";
 
 const ENDPOINT_SIGN_UP = "/sign_up";
 const ENDPOINT_SIGN_IN = "/sign_in";
@@ -22,9 +24,13 @@ type Props = {
 const Appbar = ({ userId, onSignOut }: Props) => {
   // Create a router
   const router = useRouter();
+  const {
+    data: { friends },
+  } = useFriends({ userId });
 
   const { isLoading, isError, data } = useUser({ userId: userId });
 
+  // * HANDLERS
   function goToSignUp() {
     if (router.asPath == ENDPOINT_SIGN_UP) return;
     router.push(ENDPOINT_SIGN_UP);
@@ -38,6 +44,11 @@ const Appbar = ({ userId, onSignOut }: Props) => {
   function goToSignIn() {
     if (router.asPath == ENDPOINT_SIGN_IN) return;
     router.push(ENDPOINT_SIGN_IN);
+  }
+
+  function onTicketButtonClicked(event: MouseEvent) {
+    console.log("Ticket button Clicked!");
+    friends && console.log(friends);
   }
 
   return (
@@ -55,6 +66,11 @@ const Appbar = ({ userId, onSignOut }: Props) => {
           <Box>
             <IconButton disabled color="inherit">
               <Notifications />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton onClick={onTicketButtonClicked} color="inherit">
+              <ConfirmationNumber />
             </IconButton>
           </Box>
           {/* Loading Circle while fetching user data. */}
