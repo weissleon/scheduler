@@ -326,7 +326,7 @@ const FriendsMenu: FC<FriendsMenuProps> = ({ friends }) => {
       {friends &&
         friends.length > 0 &&
         friends.map((friend) => {
-          return <FriendRow friend={friend} />;
+          return <FriendRow key={friend._id} friend={friend} />;
         })}
       <Divider variant="middle" />
       <ListItem>
