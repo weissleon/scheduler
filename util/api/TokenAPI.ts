@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { UserPub } from "@util/app/UserManager";
 
 export enum TOKEN_TYPE {
   ACCESS,
