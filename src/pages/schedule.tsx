@@ -12,7 +12,7 @@ import { Add } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import cookie from "cookie";
 import Appbar from "@components/Appbar";
-import { decodeToken } from "@util/api/TokenAPI";
+import { decodeToken, generateAccessToken } from "@util/api/TokenAPI";
 import { isToday } from "date-fns";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
 import { useMemo } from "react";
@@ -148,27 +148,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   if (!accessToken) {
-    const response = await fetch(
-      `${process.env.DOMAIN_URL}/api/auth/refresh_token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken: refreshToken }),
-      }
+    const id = decodeToken(refreshToken);
+    accessToken = generateAccessToken(id!);
+    context.res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("accessToken", accessToken, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 60,
+      })
     );
-    if (response.ok) {
-      accessToken = (await response.json()).accessToken;
-      context.res.setHeader(
-        "Set-Cookie",
-        cookie.serialize("accessToken", accessToken, {
-          httpOnly: true,
-          path: "/",
-          maxAge: 60,
-        })
-      );
-    }
   }
 
   return {
