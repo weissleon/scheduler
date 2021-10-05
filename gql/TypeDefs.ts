@@ -13,6 +13,14 @@ export const typeDefs = gql`
     friends: [User!]
   }
 
+  type Ticket {
+    id: GraphQLObjectId!
+    allower: User!
+    allowee: User!
+    expiresAt: Timestamp!
+    createdAt: Timestamp!
+  }
+
   type Participant {
     # userId: String!
     user: User!
@@ -65,21 +73,46 @@ export const typeDefs = gql`
     userId: String
   }
 
+  input TicketInput {
+    allowerId: GraphQLObjectId
+    alloweeId: GraphQLObjectId
+  }
+  input CreateTicketByEmailInput {
+    allowerId: GraphQLObjectId
+    email: String
+  }
+
+  input AddFriendByEmail {
+    userId: GraphQLObjectId
+    email: String
+  }
+
+  input AddFriendInput {
+    userId: GraphQLObjectId
+    friendId: GraphQLObjectId
+  }
+
   type Query {
     users: [User]
     user(id: String!): User
     userExist(email: String!): Boolean
     schedules(filter: ScheduleFilter!): [Schedule]
     schedule: Schedule
+    ticketsByAllowerId(allowerId: String!): [Ticket!]
+    ticketByMutualIds(allowerId: String!, alloweeId: String!): Ticket
     friends(userId: String!): [User!]
   }
 
   type Mutation {
+    createTicket(data: TicketInput!): Ticket
+    createTicketByEmail(data: CreateTicketByEmailInput!): Ticket
     addUser(data: UserInput!): User
     updateUser(id: String!, data: UserInput!): User
     deleteUser(id: String!): User
     addSchedule(data: ScheduleInput!): Schedule
     updateSchedule(id: String!, data: ScheduleInput!): Schedule
     deleteSchedule(id: String!): Schedule
+    addFriend(data: AddFriendInput!): User
+    addFriendByEmail(data: AddFriendByEmail!): User
   }
 `;

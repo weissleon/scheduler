@@ -1,8 +1,10 @@
-import { Schedule } from "@models/schedule";
-import { User } from "@models/user";
+import { Schedule, ScheduleSchema } from "@models/schedule";
+import { User, UserSchema } from "@models/user";
+import { Ticket } from "@models/ticket";
 import { GraphQLObjectIdScalar, TimestampScalar } from "./Scalars";
 import mongoose from "mongoose";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
+import { addHours } from "date-fns";
 
 export const resolvers = {
   Timestamp: TimestampScalar,
@@ -23,6 +25,25 @@ export const resolvers = {
       return friends;
     },
   },
+  Ticket: {
+    allower: async (
+      { allowerId }: { allowerId: string },
+      __: any,
+      context: any
+    ) => {
+      const allower = await User.findById(allowerId);
+      return allower;
+    },
+    allowee: async (
+      { alloweeId }: { alloweeId: string },
+      __: any,
+      context: any
+    ) => {
+      const allowee = await User.findById(alloweeId);
+      return allowee;
+    },
+  },
+
   Participant: {
     user: async ({ userId }: { userId: string }, __: any, context: any) => {
       const user = await User.findById(userId);
@@ -64,6 +85,34 @@ export const resolvers = {
       const user = await User.findOne({ email: email });
       return user ? true : false;
     },
+
+    ticketsByAllowerId: async (
+      parent: any,
+      { allowerId }: { allowerId: mongoose.ObjectId },
+      context: any
+    ) => {
+      const tickets = await Ticket.find({
+        allowerId: allowerId,
+      });
+      return tickets;
+    },
+
+    ticketByMutualIds: async (
+      parent: any,
+      {
+        allowerId,
+        alloweeId,
+      }: { allowerId: mongoose.ObjectId; alloweeId: mongoose.ObjectId },
+      context: any
+    ) => {
+      const ticket = await Ticket.findOne({
+        allowerId: allowerId,
+        alloweeId: alloweeId,
+      });
+      if (ticket && ticket.expiresAt < Date.now().valueOf()) return null;
+      return ticket;
+    },
+
     friends: async (
       parent: any,
       { userId }: { userId: string },
@@ -92,7 +141,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    addUser: async (parent: any, { data }: { data: User }, context: any) => {
+    addUser: async (
+      parent: any,
+      { data }: { data: UserSchema },
+      context: any
+    ) => {
       const newUser = new User({
         email: data.email,
         name: data.name,
@@ -103,7 +156,7 @@ export const resolvers = {
     },
     updateUser: async (
       parent: any,
-      { id, data }: { id: string; data: User },
+      { id, data }: { id: string; data: UserSchema },
       context: any
     ) => {
       const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
@@ -115,7 +168,7 @@ export const resolvers = {
     },
     addSchedule: async (
       parent: any,
-      { data }: { data: Schedule },
+      { data }: { data: ScheduleSchema },
       context: any
     ) => {
       const newSchedule = new Schedule({
@@ -136,7 +189,7 @@ export const resolvers = {
     },
     updateSchedule: async (
       parent: any,
-      { id, data }: { id: string; data: Schedule },
+      { id, data }: { id: string; data: ScheduleSchema },
       context: any
     ) => {
       const updatedSchedule = await Schedule.findByIdAndUpdate(id, data, {
@@ -152,6 +205,117 @@ export const resolvers = {
     ) => {
       const deletedSchedule = await Schedule.findByIdAndDelete(id);
       return deletedSchedule;
+    },
+    createTicket: async (
+      parent: any,
+      {
+        data: { allowerId, alloweeId },
+      }: {
+        data: { allowerId: mongoose.ObjectId; alloweeId: mongoose.ObjectId };
+      },
+      context: any
+    ) => {
+      const allower = await User.findById(allowerId);
+      if (allower?.friendIds.includes(alloweeId)) return null;
+      const ticket = await Ticket.findOne({
+        allowerId: allowerId,
+        alloweeId: alloweeId,
+      });
+      if (ticket) {
+        ticket.expiresAt = addHours(Date.now(), 1).valueOf();
+        const result = await ticket.save();
+        return result;
+      }
+      const newTicket = new Ticket({
+        allowerId: allowerId,
+        alloweeId: alloweeId,
+        createdAt: Date.now().valueOf(),
+        expiresAt: addHours(Date.now(), 1),
+      });
+      const result = await newTicket.save();
+      return result;
+    },
+
+    createTicketByEmail: async (
+      parent: any,
+      {
+        data: { allowerId, email },
+      }: {
+        data: { allowerId: mongoose.ObjectId; email: string };
+      },
+      context: any
+    ) => {
+      const allower = await User.findById(allowerId);
+      const allowee = await User.findOne({ email: email });
+      if (!allowee) return null;
+      if (allower?.friendIds.includes(allowee?._id)) return null;
+      const ticket = await Ticket.findOne({
+        allowerId: allowerId,
+        alloweeId: allowee._id,
+      });
+      if (ticket) {
+        ticket.expiresAt = addHours(Date.now(), 1).valueOf();
+        const result = await ticket.save();
+        return result;
+      }
+      const newTicket = new Ticket({
+        allowerId: allowerId,
+        alloweeId: allowee?._id,
+        createdAt: Date.now().valueOf(),
+        expiresAt: addHours(Date.now(), 1).valueOf(),
+      });
+      const result = await newTicket.save();
+      return result;
+    },
+
+    addFriend: async (
+      parent: any,
+      {
+        data: { userId, friendId },
+      }: {
+        data: { userId: mongoose.ObjectId; friendId: mongoose.ObjectId };
+      },
+      context: any
+    ) => {
+      const ticket = await Ticket.findOne({ allowerId: friendId });
+      if (!ticket) return null;
+      await Ticket.findOneAndDelete({ allowerId: userId, alloweeId: friendId });
+      await Ticket.findOneAndDelete({ allowerId: friendId, alloweeId: userId });
+      const me = await User.findById(userId);
+      me?.friendIds.push(friendId);
+      await me?.save();
+      const friend = await User.findById(friendId);
+      friend?.friendIds.push(userId);
+      await friend?.save();
+      return friend;
+    },
+    addFriendByEmail: async (
+      parent: any,
+      {
+        data: { userId, email },
+      }: {
+        data: { userId: mongoose.ObjectId; email: string };
+      },
+      context: any
+    ) => {
+      const friend = await User.findOne({ email: email });
+      if (!friend) return null;
+      const ticket = await Ticket.findOne({ allowerId: friend.id });
+      if (!ticket) return null;
+      await Ticket.findOneAndDelete({
+        allowerId: userId,
+        alloweeId: friend.id,
+      });
+      await Ticket.findOneAndDelete({
+        allowerId: friend.id,
+        alloweeId: userId,
+      });
+      const me = await User.findById(userId);
+      me?.friendIds.push(friend.id);
+      await me?.save();
+      friend?.friendIds.push(userId);
+      await friend?.save();
+      return friend;
     },
   },
 };

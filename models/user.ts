@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export type User = {
+export type UserSchema = {
   _id: mongoose.ObjectId;
   name: string;
   email: string;
@@ -9,7 +9,9 @@ export type User = {
   tsCreated?: number;
 };
 
-const UserSchema = new mongoose.Schema<User>({
+export type User = {};
+
+const UserSchema = new mongoose.Schema<UserSchema>({
   name: {
     type: String,
     required: true,
@@ -31,5 +33,5 @@ const UserSchema = new mongoose.Schema<User>({
   },
 });
 
-export const User: mongoose.Model<User, {}, {}> =
+export const User: mongoose.Model<UserSchema, {}, {}> =
   mongoose.models.User || mongoose.model("User", UserSchema);

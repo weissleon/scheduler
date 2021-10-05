@@ -1,6 +1,8 @@
+import { ScheduleStatus } from "@util/app/ScheduleManager";
 import mongoose from "mongoose";
+import { User } from "./user";
 
-export type Schedule = {
+export type ScheduleSchema = {
   _id: mongoose.ObjectId;
   creatorId: mongoose.ObjectId;
   participants: Participant[];
@@ -13,14 +15,48 @@ export type Schedule = {
   tsLastUpdated: number;
 };
 
-export type Participant = {
+// TODO Further Implementation Required.
+enum ParticipantPermission {
+  NONE = 0,
+  ADD_PARTICIPANT = 1,
+  DELETE_SCHEDULE = 2,
+}
+
+// TODO Further Implementation Required.
+enum ParticipantStatus {}
+
+type Participant = {
+  id?: string;
+  name?: string;
+  email?: string;
+  inviter?: User;
+  permission?: ParticipantPermission;
+  status?: ParticipantStatus;
+  addedAt?: number;
+  updatedAt?: number;
+};
+
+export type Schedule = {
+  id?: string;
+  creator?: User;
+  participants?: Participant[];
+  status?: ScheduleStatus;
+  title?: string;
+  detail?: string;
+  startAt?: number;
+  endAt?: number;
+  createdAt?: number;
+  updatedAt?: number;
+};
+
+export type ParticipantSchema = {
   userId: mongoose.ObjectId;
   inviterId: mongoose.ObjectId;
   permission: number;
   status: number;
 };
 
-const ParticipantSchema = new mongoose.Schema<Participant>(
+const ParticipantSchema = new mongoose.Schema<ParticipantSchema>(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +78,7 @@ const ParticipantSchema = new mongoose.Schema<Participant>(
   { _id: false }
 );
 
-const ScheduleSchema = new mongoose.Schema<Schedule>({
+const ScheduleSchema = new mongoose.Schema<ScheduleSchema>({
   creatorId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -81,5 +117,5 @@ const ScheduleSchema = new mongoose.Schema<Schedule>({
   },
 });
 
-export const Schedule: mongoose.Model<Schedule, {}, {}> =
+export const Schedule: mongoose.Model<ScheduleSchema, {}, {}> =
   mongoose.models.Schedule || mongoose.model("Schedule", ScheduleSchema);

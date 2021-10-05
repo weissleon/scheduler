@@ -7,11 +7,18 @@ import {
   Box,
   CircularProgress,
   IconButton,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import { Notifications, ConfirmationNumber } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { useFriends } from "@gql/hooks/useFriends";
-import { MouseEvent } from "react";
+import { MouseEvent, useState, useRef } from "react";
+import { useTicket } from "@gql/hooks/useTicket";
 
 const ENDPOINT_SIGN_UP = "/sign_up";
 const ENDPOINT_SIGN_IN = "/sign_in";
@@ -22,13 +29,19 @@ type Props = {
   onSignOut: () => any;
 };
 const Appbar = ({ userId, onSignOut }: Props) => {
-  // Create a router
+  // * HOOKS
   const router = useRouter();
-  const {
-    data: { friends },
-  } = useFriends({ userId });
-
+  const { data: userData, addFriendByEmail } = useFriends({ userId });
   const { isLoading, isError, data } = useUser({ userId: userId });
+  const { createTicketByEmail } = useTicket({ userId });
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isFriendMenuOpened = Boolean(anchorEl);
+  const [isAllowFriendDialogOpen, setIsAllowFriendDialogOpen] = useState(false);
+  const [isAddFriendDialogOpen, setIsAddFriendDialogOpen] = useState(false);
+
+  // * Ref
+  const friendEmailRef = useRef<HTMLInputElement>(null);
 
   // * HANDLERS
   function goToSignUp() {
@@ -46,9 +59,41 @@ const Appbar = ({ userId, onSignOut }: Props) => {
     router.push(ENDPOINT_SIGN_IN);
   }
 
-  function onTicketButtonClicked(event: MouseEvent) {
-    console.log("Ticket button Clicked!");
-    friends && console.log(friends);
+  function handleFriendMenuClick(event: MouseEvent) {
+    event.preventDefault();
+    setAnchorEl(event.currentTarget as HTMLElement);
+  }
+  function handleFriendMenuClose(event: MouseEvent) {
+    event.preventDefault();
+    setAnchorEl(null);
+  }
+  function handleAllowRequestClick(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsAllowFriendDialogOpen(() => true);
+    setAnchorEl(null);
+  }
+  function handleAddFriendClick(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsAddFriendDialogOpen(() => true);
+    setAnchorEl(null);
+  }
+
+  function handleAllowFriendRequestAllowButtonClick(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    createTicketByEmail({
+      email: friendEmailRef.current?.value.trim() as string,
+    });
+    setIsAllowFriendDialogOpen(() => false);
+  }
+
+  function handleAddFriendAddButtonClick(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    addFriendByEmail(friendEmailRef.current?.value.trim() as string);
+    setIsAddFriendDialogOpen(() => false);
   }
 
   return (
@@ -69,7 +114,7 @@ const Appbar = ({ userId, onSignOut }: Props) => {
             </IconButton>
           </Box>
           <Box>
-            <IconButton onClick={onTicketButtonClicked} color="inherit">
+            <IconButton onClick={handleFriendMenuClick} color="inherit">
               <ConfirmationNumber />
             </IconButton>
           </Box>
@@ -100,6 +145,64 @@ const Appbar = ({ userId, onSignOut }: Props) => {
               </Button>
             </>
           )}
+          <Menu
+            anchorEl={anchorEl}
+            open={isFriendMenuOpened}
+            onClose={handleFriendMenuClose}
+          >
+            <MenuItem onClick={handleAllowRequestClick}>
+              <Typography>Allow Request</Typography>
+            </MenuItem>
+            <MenuItem onClick={handleAddFriendClick}>
+              <Typography>Add Friend</Typography>
+            </MenuItem>
+          </Menu>
+          <Dialog
+            open={isAllowFriendDialogOpen}
+            onClose={() => setIsAllowFriendDialogOpen(false)}
+          >
+            <DialogTitle>Allow Friend Request</DialogTitle>
+            <TextField
+              inputRef={friendEmailRef}
+              label="email"
+              variant="outlined"
+            />
+            <DialogActions>
+              <Button onClick={() => setIsAllowFriendDialogOpen(() => false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleAllowFriendRequestAllowButtonClick}
+              >
+                Allow
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Add Friend Dialog */}
+          <Dialog
+            open={isAddFriendDialogOpen}
+            onClose={() => setIsAddFriendDialogOpen(() => false)}
+          >
+            <DialogTitle>Add Friend</DialogTitle>
+            <TextField
+              inputRef={friendEmailRef}
+              label="email"
+              variant="outlined"
+            />
+            <DialogActions>
+              <Button onClick={() => setIsAddFriendDialogOpen(() => false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleAddFriendAddButtonClick}
+              >
+                Add
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Toolbar>
       </AppBar>
     </>

@@ -180,7 +180,7 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
                     setParticipantList(() => {
                       const participantList: FriendProps[] = [];
                       (value as number[]).forEach((idx: number) => {
-                        participantList.push(data.user.friends[idx]);
+                        participantList.push(data.friends[idx]);
                       });
                       return participantList;
                     });
@@ -195,23 +195,21 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((index: number) => (
                         <Chip
-                          key={data.user.friends[index]._id}
-                          label={data.user.friends[index].name}
+                          key={data.friends[index]._id}
+                          label={data.friends[index].name}
                         />
                       ))}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
-                  {data.user.friends &&
-                    data.user.friends.length > 0 &&
-                    data.user.friends.map(
-                      (friend: FriendProps, index: number) => (
-                        <MenuItem key={friend._id} value={index}>
-                          {friend.name}
-                        </MenuItem>
-                      )
-                    )}
+                  {data &&
+                    data.friends.length > 0 &&
+                    data.friends.map((friend: FriendProps, index: number) => (
+                      <MenuItem key={friend._id} value={index}>
+                        {friend.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>
