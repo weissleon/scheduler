@@ -16,6 +16,7 @@ import { decodeToken, generateAccessToken } from "@util/api/TokenAPI";
 import { isToday } from "date-fns";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
 import { useMemo } from "react";
+import { METHOD_POST } from "@util/api/NetworkUtil";
 
 // * TYPES
 type Props = {
@@ -36,7 +37,10 @@ const Schedule: NextPage<Props> = ({ token }) => {
     router.push("/add_schedule");
   };
   const logOut = async () => {
-    const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
+    const { ok } = await fetch("/api/auth/logout", {
+      method: METHOD_POST,
+      credentials: "include",
+    });
     if (ok) router.replace("/sign_in");
   };
 
