@@ -37,7 +37,7 @@ const Schedule: NextPage<Props> = ({ token }) => {
   };
   const logOut = async () => {
     const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
-    if (ok) router.reload();
+    if (ok) router.replace("/sign_in");
   };
 
   // * VALUES
