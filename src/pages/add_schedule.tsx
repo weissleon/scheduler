@@ -26,6 +26,7 @@ import { addHours } from "date-fns";
 import Appbar from "@components/Appbar";
 import { useQueryClient } from "react-query";
 import { ScheduleStatus } from "@util/app/ScheduleManager";
+import { METHOD_POST } from "@util/api/NetworkUtil";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -76,10 +77,13 @@ const AddSchedule: NextPage<Props> = ({ token }) => {
   const [indices, setIndices] = useState<number[]>([]);
 
   // * HANDLERS
-  async function logOut() {
-    const { ok } = await fetch("/api/auth/logout", { credentials: "include" });
-    if (ok) router.reload();
-  }
+  const logOut = async () => {
+    const { ok } = await fetch("/api/auth/logout", {
+      method: METHOD_POST,
+      credentials: "include",
+    });
+    if (ok) router.replace("/sign_in");
+  };
 
   async function handleAddScheduleClick() {
     const title = titleRef!.current!.value;
