@@ -3,7 +3,9 @@ import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+
 import { CssBaseline } from "@mui/material";
+import "../styles/globals.css";
 
 const queryClient = new QueryClient();
 
