@@ -32,11 +32,13 @@ export default async function handler(
     // Send refreshToken and accessToken as cookie.
     res.setHeader("Set-Cookie", [
       cookie.serialize("refreshToken", refreshToken, {
+        secure: process.env.NODE_ENV == "production" ? true : false,
         httpOnly: true,
         path: "/",
         maxAge: REFRESH_TOKEN_AGE,
       }),
       cookie.serialize("accessToken", accessToken, {
+        secure: process.env.NODE_ENV == "production" ? true : false,
         httpOnly: true,
         path: "/",
         maxAge: ACCESS_TOKEN_AGE,

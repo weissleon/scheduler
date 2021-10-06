@@ -88,7 +88,7 @@ const Schedule: NextPage<Props> = ({ token }) => {
       <Container sx={{ marginY: "16px" }} maxWidth="md">
         {data && data.schedules.length == 0 && (
           <Typography variant="h4" textAlign="center">
-            Thare are no schedules :(
+            There are no schedules :(
           </Typography>
         )}
 

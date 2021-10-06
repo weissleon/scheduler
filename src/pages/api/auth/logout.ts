@@ -30,11 +30,13 @@ export default async function handler(
   // Expire  refreshToken and accessToken as cookie.
   res.setHeader("Set-Cookie", [
     cookie.serialize("refreshToken", refreshToken, {
+      secure: process.env.NODE_ENV == "production" ? true : false,
       httpOnly: true,
       path: "/",
       maxAge: 0,
     }),
     cookie.serialize("accessToken", "", {
+      secure: process.env.NODE_ENV == "production" ? true : false,
       httpOnly: true,
       path: "/",
       maxAge: 0,
