@@ -1,39 +1,8 @@
 import { GetServerSideProps, NextPage } from "next";
-import {
-  Container,
-  Box,
-  Typography,
-  AppBar,
-  Toolbar,
-  Button,
-} from "@mui/material";
-import { useRouter } from "next/router";
 import { TOKEN_TYPE, verifyToken } from "@util/api/TokenAPI";
 
-const Home: NextPage = () => {
-  const router = useRouter();
-
-  function handleSignIn() {
-    router.push("./sign_in");
-  }
-
-  return (
-    <Container maxWidth="xl">
-      <Box display="flex">
-        <Button
-          variant="contained"
-          sx={{ mx: "auto" }}
-          color="primary"
-          onClick={handleSignIn}
-        >
-          Sign In
-        </Button>
-      </Box>
-      <Box display="flex">
-        <Typography sx={{ mx: "auto" }}>This is Landing Page</Typography>
-      </Box>
-    </Container>
-  );
+const Entry: NextPage = () => {
+  return <></>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -45,9 +14,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return { redirect: { destination: "/schedule", permanent: false } };
   }
 
+  // If the user is not logged in, redirect to the landing page.
   return {
-    props: {},
+    redirect: { destination: "/landing", permanent: false },
   };
 };
 
-export default Home;
+export default Entry;
