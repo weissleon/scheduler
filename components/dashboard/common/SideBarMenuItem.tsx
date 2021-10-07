@@ -8,9 +8,12 @@ type Props = {
 };
 const SideBarMenuItem: FC<Props> = ({ onClick, name, icon }) => {
   return (
-    <li onClick={onClick} className="flex gap-x-8">
+    <li
+      onClick={onClick}
+      className="flex items-center px-4 py-2 transition-all cursor-pointer select-none rounded-xl gap-x-6 hover:bg-yellow-300 active:bg-yellow-400"
+    >
       <div>{icon}</div>
-      <div>{name}</div>
+      <div className="font-bold">{name}</div>
     </li>
   );
 };
