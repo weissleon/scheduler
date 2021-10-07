@@ -29,9 +29,9 @@ const Landing: NextPage = () => {
         } md:hidden absolute z-40 w-full  backdrop-blur-sm h-screen`}
       >
         {/* Menu Sidebar */}
-        <nav className="bg-white py-8 px-4 rounded-l-md shadow-md flex flex-col absolute h-screen right-0 z-50 w-1/2">
+        <nav className="absolute right-0 z-50 flex flex-col w-1/2 h-screen px-4 py-8 bg-white shadow-md rounded-l-md">
           {/* Button Group */}
-          <div className="flex flex-row justify-evenly items-center">
+          <div className="flex flex-row items-center justify-evenly">
             <Link href="/sign_in">
               <a>Log in</a>
             </Link>
@@ -41,9 +41,9 @@ const Landing: NextPage = () => {
               </a>
             </Link>
           </div>
-          <hr className="border-solid my-4 border-t border-gray-300" />
+          <hr className="my-4 border-t border-gray-300 border-solid" />
           {/* Nav Group */}
-          <div className=" flex flex-col gap-y-4">
+          <div className="flex flex-col  gap-y-4">
             <Link href="#">
               <a>Features</a>
             </Link>
@@ -56,7 +56,7 @@ const Landing: NextPage = () => {
           </div>
         </nav>
       </div>
-      <main className="px-16 flex flex-col min-h-screen  bg-red-50 ">
+      <main className="flex flex-col min-h-screen px-16 bg-red-50 ">
         {/* Appbar */}
         <div className="grid items-center w-full grid-cols-3 h-28 bg-red-50">
           {/* LOGO */}
@@ -69,11 +69,11 @@ const Landing: NextPage = () => {
           {/* MENU Button */}
           <div
             onClick={openMenu}
-            className="col-start-3 col-end-4 block md:hidden justify-self-end"
+            className="block col-start-3 col-end-4 md:hidden justify-self-end"
           >
             <Menu />
           </div>
-          <div className="hidden md:flex items-center justify-evenly gap-x-7 ">
+          <div className="items-center hidden md:flex justify-evenly gap-x-7 ">
             <a href="#" className="font-bold">
               Features
             </a>
@@ -85,7 +85,7 @@ const Landing: NextPage = () => {
             </a>
           </div>
           {/* Login Buttons */}
-          <div className="hidden md:flex flex-row items-center gap-8 ml-auto">
+          <div className="flex-row items-center hidden gap-8 ml-auto md:flex">
             <Link href="/sign_in">
               <a>Log in</a>
             </Link>
@@ -97,10 +97,10 @@ const Landing: NextPage = () => {
           </div>
         </div>
         {/* First Hero */}
-        <section className="my-16 md:my-20 flex flex-col-reverse md:flex-row items-center justify-center">
+        <section className="flex flex-col-reverse items-center justify-center my-16 md:my-20 md:flex-row">
           {/* Text Area */}
-          <div className="flex flex-1 items-center justify-center md:justify-start w-full">
-            <h2 className="font-extrabold text-center leading-normal text-gray-800 text-3xl md:text-5xl">
+          <div className="flex items-center justify-center flex-1 w-full md:justify-start">
+            <h2 className="text-3xl font-extrabold leading-normal text-center text-gray-800 md:text-5xl">
               Schedule your day with your friends.
             </h2>
           </div>

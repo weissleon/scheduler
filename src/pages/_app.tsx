@@ -5,7 +5,8 @@ import { LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 import { CssBaseline } from "@mui/material";
-import "../styles/globals.css";
+// import "../styles/globals.css";
+import "tailwindcss/tailwind.css";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
       </Head>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
