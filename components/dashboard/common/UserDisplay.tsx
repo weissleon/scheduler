@@ -26,7 +26,7 @@ const UserDisplay: FC = () => {
         onClick={toggleMenu}
         className="flex flex-row items-center px-4 py-2 ml-4 transition-all rounded-full cursor-pointer select-none active:bg-gray-200 hover:bg-gray-100 gap-x-4"
       >
-        <Avatar round={true} size="54" color="#fee2e2" />
+        <Avatar round={true} size="54" color="#fecaca" />
         <p className="text-xl font-bold">Denis Cho</p>
       </div>
     </>

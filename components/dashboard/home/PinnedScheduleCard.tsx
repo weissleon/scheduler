@@ -10,7 +10,7 @@ type Props = {
   };
 };
 
-const ScheduleCard: FC<Props> = ({ schedule }) => {
+const PinnedScheduleCard: FC<Props> = ({ schedule }) => {
   let cardColor;
   let iconBgColor;
   if (schedule.completed) {
@@ -29,9 +29,11 @@ const ScheduleCard: FC<Props> = ({ schedule }) => {
         <Notifications className="text-yellow-300" />
       </div>
       <h1 className="font-bold text-gray-700">{schedule.name}</h1>
-      <p className="ml-auto text-gray-500">{format(schedule.time, "p")}</p>
+      <p className="ml-auto text-gray-500">
+        {format(schedule.time, "dd LLL yyyy")}
+      </p>
     </div>
   );
 };
 
-export default ScheduleCard;
+export default PinnedScheduleCard;

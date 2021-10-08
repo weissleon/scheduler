@@ -2,20 +2,25 @@ import { NextPage } from "next";
 import SideBar from "@components/dashboard/common/SideBar";
 import AppBar from "@components/dashboard/common/AppBar";
 import TodayScheduleDisplay from "@components/dashboard/home/TodayScheduleDisplay";
-import ScheduleStatusDisplay from "@components/dashboard/schedule/ScheduleStatusDisplay";
+import WeeklyPinnedDisplay from "@components/dashboard/home/WeeklyPinnedDisplay";
+import PendingScheduleDisplay from "@components/dashboard/home/PendingScheduleDisplay";
 import Fab from "@components/Fab";
 const NewSchedule: NextPage = () => {
   return (
     <>
-      <div className="max-w-full flex flex-row">
+      <div className="flex flex-row max-w-full">
         <SideBar />
         <div className="w-[calc(100vw-240px)] flex flex-col px-8">
           <section>
             <AppBar />
           </section>
-          <main className="relative w-full min-h-[calc(100vh-96px)] flex flex-col gap-y-8 px-4 py-12 rounded-3xl bg-gray-100">
+          <main className="relative w-full min-h-[calc(100vh-96px)] flex flex-row gap-y-8 px-4 py-12 rounded-3xl gap-x-4 bg-gray-100">
             <TodayScheduleDisplay />
-            <ScheduleStatusDisplay />
+            {/* Second Column  */}
+            <div className="relative flex flex-col w-5/12 h-full gap-y-4">
+              <WeeklyPinnedDisplay />
+              <PendingScheduleDisplay />
+            </div>
           </main>
         </div>
       </div>

@@ -4,6 +4,10 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
+    fontFamily: {
+      title: ["Spartan"],
+      sans: ["Poppins"],
+    },
   },
   variants: {
     extend: {},

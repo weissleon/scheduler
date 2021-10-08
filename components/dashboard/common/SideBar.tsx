@@ -6,7 +6,7 @@ type Props = {
 };
 const SideBar: FC<Props> = ({ className }) => {
   return (
-    <section className="flex flex-col min-h-screen px-4 bg-red-100 shadow-md w-60 rounded-r-3xl">
+    <section className="flex flex-col min-h-screen px-4 bg-red-200 shadow-md w-60 rounded-r-3xl">
       <SideBarHeader />
       <SideBarMenu />
     </section>
