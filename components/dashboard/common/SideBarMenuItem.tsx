@@ -5,15 +5,29 @@ type Props = {
   onClick?: () => any;
   name: string;
   icon: JSX.Element;
+  showTitle?: boolean;
 };
-const SideBarMenuItem: FC<Props> = ({ onClick, name, icon }) => {
+const SideBarMenuItem: FC<Props> = ({
+  onClick,
+  name,
+  icon,
+  showTitle = true,
+}) => {
+  let itemWidth;
+
+  if (showTitle) {
+    itemWidth = `w-full px-4 py-2 `;
+  } else {
+    itemWidth = `w-max ml-2 p-2`;
+  }
+
   return (
     <li
       onClick={onClick}
-      className="flex items-center px-4 py-2 transition-all cursor-pointer select-none rounded-xl gap-x-6 hover:bg-yellow-300 active:bg-yellow-400"
+      className={`relative flex items-center transition-all rounded-full cursor-pointer select-none gap-x-6 hover:bg-yellow-300 active:bg-yellow-400 ${itemWidth}`}
     >
       <div>{icon}</div>
-      <div className="font-bold">{name}</div>
+      {showTitle && <div className="font-bold">{name}</div>}
     </li>
   );
 };

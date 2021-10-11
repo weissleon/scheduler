@@ -18,7 +18,8 @@
       "@util/*": ["util/*"],
       "@models/*": ["models/*"],
       "@gql/*": ["gql/*"],
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@data/*": ["data/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.svg", "**/*.ts", "**/*.tsx", "app/app.js"],

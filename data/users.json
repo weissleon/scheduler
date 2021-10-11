@@ -1,0 +1,30 @@
+[
+  {
+    "id": "927979e3a06d6938dc6f3fea",
+    "name": "Denis Cho",
+    "email": "chodenis1103@gmail.com",
+    "password": "1234",
+    "ts": 1630274797109
+  },
+  {
+    "id": "9c94e9a4ff03cb1a642b6867",
+    "name": "Esther Kim",
+    "email": "tpwns430@gmail.com",
+    "password": "1234",
+    "ts": 1630419609642
+  },
+  {
+    "id": "6144b0e6f7da8f2529906c0e",
+    "name": "Dana Cho",
+    "email": "hui_0103@gmail.com",
+    "password": "1234",
+    "ts": 1630500009642
+  },
+  {
+    "id": "6144b13ff7da8f2529906c0f",
+    "name": "Grace Yeon",
+    "email": "yhi316570@naver.com",
+    "password": "1234",
+    "ts": 1630619609642
+  }
+]

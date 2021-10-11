@@ -7,7 +7,11 @@ import {
   Group,
 } from "@mui/icons-material";
 
-const SideBarMenu: FC = () => {
+type Props = {
+  showTitle?: boolean;
+};
+
+const SideBarMenu: FC<Props> = ({ showTitle = true }) => {
   const menuList = [
     {
       name: "Dashboard",
@@ -32,10 +36,11 @@ const SideBarMenu: FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-y-8">
+    <div className="relative flex flex-col w-full gap-y-8">
       {menuList.length > 0 &&
         menuList.map((menu, index) => (
           <SideBarMenuItem
+            showTitle={showTitle}
             key={index}
             icon={menu.icon}
             onClick={menu.onClick}

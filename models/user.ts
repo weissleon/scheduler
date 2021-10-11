@@ -9,7 +9,11 @@ export type UserSchema = {
   tsCreated?: number;
 };
 
-export type User = {};
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+};
 
 const UserSchema = new mongoose.Schema<UserSchema>({
   name: {

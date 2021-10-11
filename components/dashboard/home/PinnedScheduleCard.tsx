@@ -1,23 +1,20 @@
 import { FC } from "react";
 import { format } from "date-fns";
 import { Notifications } from "@mui/icons-material";
+import { Schedule } from "@models/schedule";
 
 type Props = {
-  schedule: {
-    name: string;
-    time: number;
-    completed: boolean;
-  };
+  schedule: Schedule;
 };
 
 const PinnedScheduleCard: FC<Props> = ({ schedule }) => {
   let cardColor;
   let iconBgColor;
-  if (schedule.completed) {
+  if (schedule.startAt! < Date.now()) {
     cardColor = "bg-red-200 hover:bg-red-300 active:bg-red-400";
     iconBgColor = "bg-white";
   } else {
-    cardColor = "bg-gray-100 hover:bg-gray-200 active:bg-gray-300";
+    cardColor = "bg-white hover:bg-gray-50 active:bg-gray-100";
     iconBgColor = "bg-transparent";
   }
 
@@ -28,9 +25,9 @@ const PinnedScheduleCard: FC<Props> = ({ schedule }) => {
       <div className={`p-1 rounded-lg ${iconBgColor}`}>
         <Notifications className="text-yellow-300" />
       </div>
-      <h1 className="font-bold text-gray-700">{schedule.name}</h1>
+      <h1 className="font-bold text-gray-700">{schedule.title}</h1>
       <p className="ml-auto text-gray-500">
-        {format(schedule.time, "dd LLL yyyy")}
+        {format(schedule.startAt!, "dd LLL yyyy")}
       </p>
     </div>
   );
